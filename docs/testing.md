@@ -54,14 +54,14 @@ export const PAGE = readFileSync("public/dashboard.html", "utf8");
 
 ## Tier 1 — your own logic (bare Node)
 
-Whatever surrounds the map — data transforms, URL builders, config generation. Nothing OnlyMapJS-specific, except one inherited guarantee: `import "onlymapjs"` is **side-effect-safe in Node** (element registration no-ops outside a browser), so shared modules that import the library never break your test runner.
+Whatever surrounds the map — data transforms, URL builders, config generation. Nothing OnlyMapJS-specific, except one inherited guarantee: `import "@nika-js/onlymap"` is **side-effect-safe in Node** (element registration no-ops outside a browser), so shared modules that import the library never break your test runner.
 
 ## Tier 2a — static: validate + lock the meaning
 
 ```ts
 // test/manifest.test.ts
 // @vitest-environment happy-dom
-import { OmMap } from "onlymapjs";
+import { OmMap } from "@nika-js/onlymap";
 import { PAGE } from "./manifest";
 
 it("manifest is valid", () => {
@@ -83,8 +83,8 @@ This is where most of your tests should live. The harness mounts your real page 
 ```ts
 // test/dashboard.test.ts
 // @vitest-environment happy-dom
-import "onlymapjs";
-import { mountForTest, type TestHarness } from "onlymapjs";
+import "@nika-js/onlymap";
+import { mountForTest, type TestHarness } from "@nika-js/onlymap";
 import { PAGE } from "./manifest";
 
 let h: TestHarness;

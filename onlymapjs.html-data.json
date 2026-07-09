@@ -50,7 +50,7 @@
       "references": [
         {
           "name": "README",
-          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/../README.md"
+          "url": "https://github.com/NikaGeospatial/onlymapjs/blob/main/docs/../README.md"
         }
       ]
     },
@@ -1247,7 +1247,7 @@
       "references": [
         {
           "name": "Stories & overlays",
-          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/stories.md"
+          "url": "https://github.com/NikaGeospatial/onlymapjs/blob/main/docs/stories.md"
         }
       ]
     },
@@ -1491,7 +1491,7 @@
       "references": [
         {
           "name": "Testing & widgets",
-          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/testing.md"
+          "url": "https://github.com/NikaGeospatial/onlymapjs/blob/main/docs/testing.md"
         }
       ]
     },
@@ -1527,7 +1527,7 @@
       "references": [
         {
           "name": "Map stories",
-          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/stories.md"
+          "url": "https://github.com/NikaGeospatial/onlymapjs/blob/main/docs/stories.md"
         }
       ]
     },
@@ -1680,7 +1680,7 @@
       "references": [
         {
           "name": "Map stories",
-          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/stories.md"
+          "url": "https://github.com/NikaGeospatial/onlymapjs/blob/main/docs/stories.md"
         }
       ]
     }

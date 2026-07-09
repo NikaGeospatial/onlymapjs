@@ -8,7 +8,7 @@ Vite/npm project:
 
 ```html
 <script type="module">
-  import "onlymapjs";
+  import "@nika-js/onlymap";
   import "onlymapjs/onlymapjs.css";
 </script>
 ```
@@ -16,7 +16,7 @@ Vite/npm project:
 Static CDN page:
 
 ```html
-<script type="module" src="https://esm.sh/onlymapjs@0.1.0"></script>
+<script type="module" src="https://esm.sh/@nika-js/onlymap@0.1.0"></script>
 ```
 
 If using MapLibre basemaps from a built package, include the CSS import or stylesheet. Standalone `basemap="none"` maps do not need the CSS.
@@ -119,7 +119,7 @@ Common choices:
 Authenticated fetches:
 
 ```js
-import { OmMap } from "onlymapjs";
+import { OmMap } from "@nika-js/onlymap";
 OmMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
 ```
 

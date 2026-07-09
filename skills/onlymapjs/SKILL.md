@@ -18,12 +18,12 @@ Use OnlyMapJS as a declarative HTML map library. Write custom elements such as `
 
 ```html
 <script type="module">
-  import "onlymapjs";
+  import "@nika-js/onlymap";
   import "onlymapjs/onlymapjs.css";
 </script>
 ```
 
-For no-build CDN examples, use a published module URL such as `https://esm.sh/onlymapjs@0.1.0`.
+For no-build CDN examples, use a published module URL such as `https://esm.sh/@nika-js/onlymap@0.1.0`.
 
 ## Required References
 

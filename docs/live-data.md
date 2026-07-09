@@ -29,7 +29,7 @@ Rule of thumb: delta/event feeds → WebSocket; materialized "where is everyone 
 The transport is generic; your domain format lives in a plugin:
 
 ```js
-import { OmMap } from "onlymapjs";
+import { OmMap } from "@nika-js/onlymap";
 OmMap.registerSource("ais", {
   // optional: sent on every (re)connect — subscription/auth handshakes
   onOpen: (send) => send(JSON.stringify({ APIKey: "...", BoundingBoxes: [...] })),
@@ -61,7 +61,7 @@ Runnable example: [`examples/fleet.html`](../examples/fleet.html) — 20 drivers
 Private APIs need credentials, and credentials must never appear in manifest markup (the manifest may be agent-generated, and attributes are visible DOM). Configure requests programmatically instead:
 
 ```js
-import { OmMap } from "onlymapjs";
+import { OmMap } from "@nika-js/onlymap";
 
 OmMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
 // or per-URL:

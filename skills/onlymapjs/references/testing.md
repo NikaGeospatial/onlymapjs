@@ -7,7 +7,7 @@ Use this reference when a user asks to debug, validate, review, or test an OnlyM
 Use `OmMap.validate(htmlString)` before finalizing agent-written maps.
 
 ```ts
-import { OmMap } from "onlymapjs";
+import { OmMap } from "@nika-js/onlymap";
 
 const result = OmMap.validate(html);
 if (!result.valid) {
@@ -58,8 +58,8 @@ Use `mountForTest` for most interaction tests.
 
 ```ts
 // @vitest-environment happy-dom
-import "onlymapjs";
-import { mountForTest } from "onlymapjs";
+import "@nika-js/onlymap";
+import { mountForTest } from "@nika-js/onlymap";
 
 const h = await mountForTest(`
   <om-map center="[-122.42, 37.77]" zoom="11">

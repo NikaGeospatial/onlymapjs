@@ -7,7 +7,7 @@
 **Interactive WebGL maps from plain HTML.** Write a declarative manifest — layers, widgets, popups, behaviors as custom elements — and OnlyMapJS drives [deck.gl](https://deck.gl) underneath: rendering, data loading, live updates, picking, and UI, with no build step and no imperative glue code.
 
 ```html
-<script type="module" src="onlymapjs"></script>
+<script type="module" src="https://esm.sh/@nika-js/onlymap"></script>
 
 <om-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre">
   <om-layer id="quakes" type="ScatterplotLayer" data="./quakes.json"
@@ -30,19 +30,23 @@ That's a complete app: a no-token MapLibre basemap, data-driven colors and sizes
 
 It's also designed to be written **by AI agents**: HTML is a reliable generation target, [`llms.txt`](llms.txt) teaches the format, and `OmMap.validate()` returns structured errors with actionable fixes — a real feedback loop instead of a blank canvas.
 
-> ⚠️ **Status: v0.1, pre-release.** Not yet published to npm. Commercial licensing terms are in [LICENSE.md](LICENSE.md); APIs may still move.
+> ⚠️ **Status: v0.1.** Proprietary — commercial licensing terms are in [LICENSE.md](LICENSE.md); APIs may still move before 1.0.
 
-## Running it today
+## Install
 
 ```bash
-git clone <this repo> && cd onlymap
-npm install
-npm run dev        # opens the local example navigator
-npm test           # 251 unit/behavioral tests
-npm run test:e2e   # 12 Playwright tests (real GPU rendering & picking)
+npm install @nika-js/onlymap
 ```
 
-The examples are the best tour: widgets, behaviors & overlays, basemaps, columnar/Arrow data, manual drawing, 3D models, a live WebSocket ship feed, and a polled driver fleet.
+Or with no build step at all, straight from a CDN:
+
+```html
+<script type="module" src="https://esm.sh/@nika-js/onlymap"></script>
+```
+
+Then `npx @nika-js/onlymap init` wires up VS Code IntelliSense and `!`-prefixed manifest snippets for your project. The library ships with 254 unit/behavioral tests and 12 Playwright GPU tests.
+
+The [examples](https://github.com/NikaGeospatial/onlymapjs/tree/main/examples) are the best tour: widgets, behaviors & overlays, basemaps, columnar/Arrow data, manual drawing, 3D models, a live WebSocket ship feed, and a polled driver fleet.
 
 ## The manifest
 
@@ -106,17 +110,17 @@ Custom widget scripts receive `ctx`: layer metadata, `viewport` (bounds/zoom/pro
 `onlymapjs.html-data.json` (generated from the layer registry — `npm run gen:html-data`) gives autocomplete and hover docs for every `om-*` element and attribute in VS Code and any editor speaking the [html-customData](https://github.com/microsoft/vscode-custom-data) format:
 
 ```bash
-npx onlymapjs init
+npx @nika-js/onlymap init
 ```
 
 That opt-in command updates `.vscode/settings.json` and copies the `!`-prefixed manifest snippets into `.vscode/onlymap.code-snippets`. It never runs automatically during install.
 
 ```jsonc
 // .vscode/settings.json
-{ "html.customData": ["./node_modules/onlymapjs/onlymapjs.html-data.json"] }
+{ "html.customData": ["./node_modules/@nika-js/onlymap/onlymapjs.html-data.json"] }
 ```
 
-The package also ships `!`-prefixed manifest snippets (`node_modules/onlymapjs/.vscode/onlymap.code-snippets`) — type `!starter`, `!map`, `!layer`, `!draw`, etc. to scaffold a well-formed element.
+The package also ships `!`-prefixed manifest snippets (`node_modules/@nika-js/onlymap/.vscode/onlymap.code-snippets`) — type `!starter`, `!map`, `!layer`, `!draw`, etc. to scaffold a well-formed element.
 
 ## LLM Skill
 
@@ -125,19 +129,19 @@ The npm package and public mirror include a portable Skill at `skills/onlymapjs`
 With the Vercel Labs `skills` CLI, install it from the public GitHub repo:
 
 ```bash
-npx -y skills add <owner>/<repo> --skill onlymapjs --agent codex
+npx -y skills add NikaGeospatial/onlymapjs --skill onlymapjs --agent codex
 ```
 
 Or install globally for Codex:
 
 ```bash
-npx -y skills add <owner>/<repo> --skill onlymapjs --agent codex --global
+npx -y skills add NikaGeospatial/onlymapjs --skill onlymapjs --agent codex --global
 ```
 
-Replace `<owner>/<repo>` with the public mirror repository. To inspect it without installing:
+To inspect it without installing:
 
 ```bash
-npx -y skills add <owner>/<repo> --list
+npx -y skills add NikaGeospatial/onlymapjs --list
 ```
 
 ## Validation — the feedback loop
