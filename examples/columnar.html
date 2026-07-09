@@ -33,64 +33,66 @@
     <a href="basemap.html">Basemap</a>
     <a href="columnar.html" class="current">Columnar / GeoArrow</a>
     <a href="scenegraph.html">3D models</a>
+    <a href="google-3d-tiles.html">Google 3D Tiles</a>
+    <a href="google-3d-flyby.html">3D Flyby</a>
     <a href="ais.html">Live AIS</a>
     <a href="fleet.html">Fleet (polling)</a>
     <a href="story.html">Map story</a>
   </header>
 
-  <deck-map center="[-150, 35]" zoom="2.2" basemap="maplibre">
+  <om-map center="[-150, 35]" zoom="2.2" basemap="maplibre">
 
     <!-- Shapefile (real Natural Earth 110m): geometry from .shp, attributes
          joined from the .dbf sidecar — country outlines under everything. -->
-    <deck-layer id="countries" type="GeoJsonLayer"
+    <om-layer id="countries" type="GeoJsonLayer"
                 data="./data/ne-countries/ne_110m_admin_0_countries.shp"
                 label="Countries (Shapefile)" color="#7a7a7a"
                 filled="false" stroked get-line-color="[120,120,120]"
-                line-width-min-pixels="1" visible="false"></deck-layer>
+                line-width-min-pixels="1" visible="false"></om-layer>
 
     <!-- KML — San Francisco landmarks (mixed Point/LineString/Polygon
          placemarks) parsed to GeoJSON features; fly there with the button. -->
-    <deck-layer id="kml-landmarks" type="GeoJsonLayer"
+    <om-layer id="kml-landmarks" type="GeoJsonLayer"
                 data="./data/sf-landmarks.kml"
                 label="SF landmarks (KML)" color="#2ca02c"
-                filled stroked visible="false"></deck-layer>
+                filled stroked visible="false"></om-layer>
 
     <!-- CSV, same story (v0.2 F1): the .csv extension picks the format, the
          parser transposes rows into typed columns, and every $field works.
          A REAL saved USGS feed snapshot (quoted commas and all) — the small
          blue dots, rendered UNDER the live Arrow quakes. -->
-    <deck-layer id="quakes-csv" type="ScatterplotLayer"
+    <om-layer id="quakes-csv" type="ScatterplotLayer"
                 data="./data/quakes-usgs.csv"
                 label="Quakes (CSV snapshot)" color="#2166ac"
                 get-position="[$longitude, $latitude]"
                 get-radius="2.5"
-                radius-units="pixels"></deck-layer>
+                radius-units="pixels"></om-layer>
 
     <!-- GeoArrow POLYGONS (v0.2 F2): a .arrow geometry column with the
          geoarrow.polygon extension type parses to GeoJSON feature rows —
          GeoJsonLayer, picking, and per-feature trace all work. Use the
          "SF regions" button (bottom-left) to fly to them. -->
-    <deck-layer id="regions-arrow" type="GeoJsonLayer"
+    <om-layer id="regions-arrow" type="GeoJsonLayer"
                 data="./data/regions.arrow"
                 label="SF regions (GeoArrow)" color="#3388ff"
                 filled stroked get-line-color="[20,20,20]" line-width-min-pixels="1"
-                pickable></deck-layer>
+                pickable></om-layer>
 
     <!-- Same attributes as any JSON layer — the .arrow extension is the only
          hint, and $field/$geometry resolve to columns automatically. -->
-    <deck-layer id="quakes" type="ScatterplotLayer"
+    <om-layer id="quakes" type="ScatterplotLayer"
                 data="./data/earthquakes.arrow"
                 label="Earthquakes, past week (USGS)" color="#b30000"
                 get-position="$geometry"
                 get-fill-color="scale($magnitude, sequential, ['#fee8c8', '#b30000'], domain=[0, 7])"
                 get-radius="scale($magnitude, sqrt, [1.5, 18], domain=[0, 7])"
                 radius-units="pixels" pickable
-                filter-field="magnitude" filter-range="[-2, 10]"></deck-layer>
+                filter-field="magnitude" filter-range="[-2, 10]"></om-layer>
 
-    <deck-widget type="legend" title="Layers" position="top-right"></deck-widget>
+    <om-widget type="legend" title="Layers" position="top-right"></om-widget>
 
     <!-- The GeoArrow polygons live in SF — subpixel at world zoom. -->
-    <deck-widget position="bottom-right">
+    <om-widget position="bottom-right">
       <style>
         .fmt-nav button { font: 12px system-ui, sans-serif; padding: 6px 10px; border: 0; border-radius: 6px;
                           background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.25); cursor: pointer; margin-right: 6px; }
@@ -101,7 +103,7 @@
         <button id="go-sf">SF regions (GeoArrow) →</button>
         <button id="go-kml">SF landmarks (KML) →</button>
       </div>
-      <script type="deck/widget">
+      <script type="om/widget">
         this.watch = [];
         this.render = (ctx) => {
           this.$("#go-world").onclick = () => ctx.emit("fly-to", { center: [-150, 35], zoom: 2.2, duration: 1500 });
@@ -110,16 +112,16 @@
           this.$("#go-kml").onclick = () => { ctx.emit("toggle-layer", { layer: "kml-landmarks", visible: true }); ctx.emit("fly-to", { center: [-122.43, 37.775], zoom: 12, duration: 1500 }); };
         };
       </script>
-    </deck-widget>
+    </om-widget>
 
     <!-- The slider drives the GPU DataFilterExtension range live; the
          columnar getFilterValue reads the magnitude column at each index. -->
-    <deck-widget type="filter" layer="quakes" field="magnitude" title="Magnitude"
-                 position="top-right" style="margin-top: 90px;"></deck-widget>
+    <om-widget type="filter" layer="quakes" field="magnitude" title="Magnitude"
+                 position="top-right" style="margin-top: 90px;"></om-widget>
 
     <!-- Zero-copy fast path: ctx.stats on an unfiltered whole layer reads the
          magnitude Float64Array column directly — no row objects anywhere. -->
-    <deck-widget position="top-left" watch="data:quakes">
+    <om-widget position="top-left" watch="data:quakes">
       <style>
         .panel { background: white; padding: 10px 14px; border-radius: 8px; font: 12px system-ui;
                  box-shadow: 0 2px 8px rgba(0,0,0,.15); }
@@ -132,7 +134,7 @@
         <div class="row"><span>Mean magnitude</span><b id="mean">—</b></div>
         <div class="row"><span>Deepest</span><b id="depth">—</b></div>
       </div>
-      <script type="deck/widget">
+      <script type="om/widget">
         this.watch = ["data:quakes"];
         this.render = (ctx) => {
           const mag = ctx.stats("quakes", "magnitude", { filtered: false });
@@ -144,10 +146,10 @@
           this.$("#depth").textContent = depth.max.toFixed(0) + " km";
         };
       </script>
-    </deck-widget>
+    </om-widget>
 
     <!-- Histogram over the viewport-filtered rows — pan/zoom and it follows. -->
-    <deck-widget type="vega-lite" layer="quakes" watch="viewport data:quakes"
+    <om-widget type="vega-lite" layer="quakes" watch="viewport data:quakes"
                  title="Magnitude (in view)" position="bottom-left">
       <script type="application/json">
         {
@@ -158,14 +160,14 @@
           }
         }
       </script>
-    </deck-widget>
+    </om-widget>
 
     <!-- Columnar picking: deck.gl reports only an index; the runtime
          materializes the row from the columns for {{place}}/{{magnitude}}. -->
-    <deck-behavior on="hover" layer="quakes" action="show-tooltip"
-                   template="#quake-tooltip"></deck-behavior>
+    <om-behavior on="hover" layer="quakes" action="show-tooltip"
+                   template="#quake-tooltip"></om-behavior>
 
-  </deck-map>
+  </om-map>
 
   <template id="quake-tooltip">
     <div style="background: #222; color: #fff; padding: 6px 10px; border-radius: 6px; font: 12px system-ui;">

@@ -16,20 +16,20 @@ Use these patterns as starting points. Replace data URLs, layer ids, fields, cen
   </script>
   <style>
     html, body { margin: 0; height: 100%; }
-    deck-map { display: block; height: 100vh; }
+    om-map { display: block; height: 100vh; }
   </style>
 </head>
 <body>
-  <deck-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre" validate>
-    <deck-layer id="points" type="ScatterplotLayer"
+  <om-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre" validate>
+    <om-layer id="points" type="ScatterplotLayer"
                 data="./points.json"
                 label="Points" color="#1f9e89"
                 get-position="[$lon, $lat]"
                 radius="6" radius-units="pixels"
-                pickable></deck-layer>
-    <deck-widget type="legend" position="bottom-right" title="Layers"></deck-widget>
-    <deck-widget type="zoom-controls" position="top-right"></deck-widget>
-  </deck-map>
+                pickable></om-layer>
+    <om-widget type="legend" position="bottom-right" title="Layers"></om-widget>
+    <om-widget type="zoom-controls" position="top-right"></om-widget>
+  </om-map>
 </body>
 </html>
 ```
@@ -37,18 +37,18 @@ Use these patterns as starting points. Replace data URLs, layer ids, fields, cen
 ## Click Popup
 
 ```html
-<deck-layer id="quakes" type="ScatterplotLayer"
+<om-layer id="quakes" type="ScatterplotLayer"
             data="./quakes.json"
             get-position="[$lon, $lat]"
             get-fill-color="scale($magnitude, sequential, ['#fee8c8','#b30000'], domain=[0,8])"
             get-radius="$magnitude * 2"
-            radius-units="pixels" pickable></deck-layer>
+            radius-units="pixels" pickable></om-layer>
 
-<deck-overlay id="quake-detail" anchor-from="selection" anchor-offset="bottom-center" visible="false">
+<om-overlay id="quake-detail" anchor-from="selection" anchor-offset="bottom-center" visible="false">
   <div><b>{{place}}</b><br />M {{magnitude}}</div>
-</deck-overlay>
+</om-overlay>
 
-<deck-behavior on="click" layer="quakes" action="show-overlay" target="quake-detail"></deck-behavior>
+<om-behavior on="click" layer="quakes" action="show-overlay" target="quake-detail"></om-behavior>
 ```
 
 ## Hover Tooltip
@@ -57,19 +57,19 @@ Use these patterns as starting points. Replace data URLs, layer ids, fields, cen
 <template id="point-tooltip">
   <div><b>{{name}}</b><br />Value: {{value}}</div>
 </template>
-<deck-behavior on="hover" layer="points" action="show-tooltip" template="#point-tooltip"></deck-behavior>
+<om-behavior on="hover" layer="points" action="show-tooltip" template="#point-tooltip"></om-behavior>
 ```
 
 ## Choropleth GeoJSON
 
 ```html
-<deck-layer id="regions" type="GeoJsonLayer"
+<om-layer id="regions" type="GeoJsonLayer"
             data="./regions.geojson"
             label="Regions" color="#3388ff"
             get-fill-color="scale($rate, sequential, ['#eff3ff','#08519c'], domain=[0,100])"
             get-line-color="[40, 40, 40]"
             line-width-min-pixels="1"
-            filled stroked pickable></deck-layer>
+            filled stroked pickable></om-layer>
 ```
 
 For GeoJSON, `$rate` reads `feature.properties.rate`.
@@ -77,16 +77,16 @@ For GeoJSON, `$rate` reads `feature.properties.rate`.
 ## Filtered Dashboard
 
 ```html
-<deck-layer id="quakes" type="ScatterplotLayer"
+<om-layer id="quakes" type="ScatterplotLayer"
             data="./quakes.csv"
             get-position="[$longitude, $latitude]"
             get-fill-color="scale($mag, sequential, ['#ffffcc','#800026'], domain=[0,8])"
             filter-field="mag" filter-range="[0, 8]"
-            radius="5" radius-units="pixels" pickable></deck-layer>
+            radius="5" radius-units="pixels" pickable></om-layer>
 
-<deck-widget type="filter" layer="quakes" field="mag" position="top-left"></deck-widget>
+<om-widget type="filter" layer="quakes" field="mag" position="top-left"></om-widget>
 
-<deck-widget type="vega-lite" layer="quakes" watch="viewport" position="bottom-left" title="Magnitude">
+<om-widget type="vega-lite" layer="quakes" watch="viewport" position="bottom-left" title="Magnitude">
   <script type="application/json">
     {
       "mark": "bar",
@@ -96,15 +96,15 @@ For GeoJSON, `$rate` reads `feature.properties.rate`.
       }
     }
   </script>
-</deck-widget>
+</om-widget>
 ```
 
 ## Custom Stats Widget
 
 ```html
-<deck-widget position="top-left">
+<om-widget position="top-left">
   <div id="stats"></div>
-  <script type="deck/widget">
+  <script type="om/widget">
     this.watch = ["data:quakes", "viewport", "selection"];
     this.render = (ctx) => {
       const s = ctx.stats("quakes", "magnitude", { scope: "viewport" });
@@ -112,102 +112,102 @@ For GeoJSON, `$rate` reads `feature.properties.rate`.
       this.$("#stats").textContent = `${s.count} in view; max ${s.max ?? "—"}; selected ${selected}`;
     };
   </script>
-</deck-widget>
+</om-widget>
 ```
 
 ## Dense Labels with PopupLayer
 
 ```html
-<deck-layer id="labels" type="PopupLayer"
+<om-layer id="labels" type="PopupLayer"
             data="./places.json"
             layout="badge"
             min-zoom="10"
             get-position="[$lon, $lat]"
             get-text="$name"
             get-color="$category === 'A' ? [0, 120, 255] : [255, 120, 0]"
-            pickable></deck-layer>
+            pickable></om-layer>
 ```
 
-Use `PopupLayer` instead of many `<deck-overlay>` elements for labels/badges at scale.
+Use `PopupLayer` instead of many `<om-overlay>` elements for labels/badges at scale.
 
 ## WebSocket Fleet
 
 ```html
 <script type="module">
-  import { DeckMap } from "onlymapjs";
+  import { OmMap } from "onlymapjs";
   import "onlymapjs/onlymapjs.css";
 
-  DeckMap.registerSource("fleet", {
+  OmMap.registerSource("fleet", {
     decode: (m) => m.type === "position"
       ? { id: m.id, lon: m.lon, lat: m.lat, heading: m.heading, speed: m.speed }
       : null
   });
 </script>
 
-<deck-layer id="vehicles" type="ScatterplotLayer"
+<om-layer id="vehicles" type="ScatterplotLayer"
             data="wss://example.com/fleet" source="fleet" key="id" flush="250ms"
             get-position="[$lon, $lat]"
             transition="get-position 300ms"
-            radius="5" radius-units="pixels" pickable></deck-layer>
+            radius="5" radius-units="pixels" pickable></om-layer>
 ```
 
 ## Polled REST Fleet
 
 ```html
 <script type="module">
-  import { DeckMap } from "onlymapjs";
-  DeckMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
+  import { OmMap } from "onlymapjs";
+  OmMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
 </script>
 
-<deck-layer id="drivers" type="IconLayer"
+<om-layer id="drivers" type="IconLayer"
             data="/api/fleet.json" refresh="5s"
             get-position="[$lon, $lat]"
             get-angle="-$heading"
-            pickable></deck-layer>
+            pickable></om-layer>
 ```
 
 ## Draw/Sketch Map
 
 ```html
-<deck-layer id="sketch" type="GeoJsonLayer" data="draw:sketch"
+<om-layer id="sketch" type="GeoJsonLayer" data="draw:sketch"
             label="Sketch"
             get-fill-color="[80, 140, 255, 90]"
             get-line-color="[40, 90, 220]"
             point-radius-min-pixels="6"
             line-width-min-pixels="3"
-            stroked filled pickable></deck-layer>
+            stroked filled pickable></om-layer>
 
-<deck-widget type="draw" target="sketch" position="top-left"
+<om-widget type="draw" target="sketch" position="top-left"
              modes="point line polygon" save="both"
-             autosave="onlymapjs-sketch"></deck-widget>
+             autosave="onlymapjs-sketch"></om-widget>
 ```
 
 ## Story/Tour
 
 ```html
-<deck-overlay id="intro" anchor="[-122.42, 37.77]" visible="false">
+<om-overlay id="intro" anchor="[-122.42, 37.77]" visible="false">
   <div>Welcome</div>
-</deck-overlay>
+</om-overlay>
 
-<deck-story id="tour" interrupt="pause">
-  <deck-step duration="2s" action="fly-to" center="[-122.42, 37.77]" zoom="12" curve></deck-step>
-  <deck-step duration="1s" action="show-overlay" target="intro" parallel></deck-step>
-  <deck-step duration="2s" populate layer="points"></deck-step>
-</deck-story>
+<om-story id="tour" interrupt="pause">
+  <om-step duration="2s" action="fly-to" center="[-122.42, 37.77]" zoom="12" curve></om-step>
+  <om-step duration="1s" action="show-overlay" target="intro" parallel></om-step>
+  <om-step duration="2s" populate layer="points"></om-step>
+</om-story>
 
-<deck-widget type="player" story="tour" position="bottom-left"></deck-widget>
+<om-widget type="player" story="tour" position="bottom-left"></om-widget>
 ```
 
 ## 3D Models
 
 ```html
-<deck-map center="[-122.399, 37.79]" zoom="15.5" pitch="55" bearing="20" basemap="maplibre">
-  <deck-layer id="assets" type="ScenegraphLayer"
+<om-map center="[-122.399, 37.79]" zoom="15.5" pitch="55" bearing="20" basemap="maplibre">
+  <om-layer id="assets" type="ScenegraphLayer"
               scenegraph="./asset.glb"
               data="./assets.json"
               get-position="[$lon, $lat]"
               get-orientation="[0, $heading, 90]"
               get-scale="[$width, $height, $depth]"
-              lighting="pbr" pickable></deck-layer>
-</deck-map>
+              lighting="pbr" pickable></om-layer>
+</om-map>
 ```

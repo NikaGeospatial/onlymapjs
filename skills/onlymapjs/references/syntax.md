@@ -23,7 +23,7 @@ If using MapLibre basemaps from a built package, include the CSS import or style
 
 ## Elements
 
-### `<deck-map>`
+### `<om-map>`
 
 Root element. Children are layers, widgets, overlays, behaviors, and stories.
 
@@ -40,12 +40,12 @@ Common attributes:
 Example:
 
 ```html
-<deck-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre" validate>
+<om-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre" validate>
   ...
-</deck-map>
+</om-map>
 ```
 
-### `<deck-layer>`
+### `<om-layer>`
 
 Declares a deck.gl layer. Required: `id`, `type`.
 
@@ -119,14 +119,14 @@ Common choices:
 Authenticated fetches:
 
 ```js
-import { DeckMap } from "onlymapjs";
-DeckMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
+import { OmMap } from "onlymapjs";
+OmMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
 ```
 
 Custom format:
 
 ```js
-DeckMap.registerFormat({
+OmMap.registerFormat({
   match: (url, contentType) => url.endsWith(".custom"),
   parse: async (res, url) => /* return rows or columnar data */
 });
@@ -135,7 +135,7 @@ DeckMap.registerFormat({
 Custom stream decoder:
 
 ```js
-DeckMap.registerSource("fleet", {
+OmMap.registerSource("fleet", {
   onOpen: (send) => send(JSON.stringify({ subscribe: "vehicles" })),
   decode: (msg) => msg.type === "position" ? { id: msg.id, lon: msg.lon, lat: msg.lat } : null
 });
@@ -146,7 +146,7 @@ DeckMap.registerSource("fleet", {
 Restricted expression block:
 
 ```html
-<script type="deck/accessors">
+<script type="om/accessors">
   export const getPosition = d => [$lon, $lat];
   export const getRadius = d => Math.max(2, $magnitude * 3);
 </script>
@@ -155,17 +155,17 @@ Restricted expression block:
 Full JavaScript block:
 
 ```html
-<deck-layer id="routes" type="PathLayer" js>
-  <script type="deck/accessors">
+<om-layer id="routes" type="PathLayer" js>
+  <script type="om/accessors">
     const speeds = { slow: [80, 120, 255], fast: [255, 80, 80] };
     export const getColor = d => speeds[d.speedClass] ?? [180, 180, 180];
   </script>
-</deck-layer>
+</om-layer>
 ```
 
 Do not use full-JS blocks on columnar/Arrow layers.
 
-### `<deck-widget>`
+### `<om-widget>`
 
 Built-ins:
 
@@ -184,24 +184,24 @@ Positions: `top-left`, `top-right`, `bottom-left`, `bottom-right`.
 Examples:
 
 ```html
-<deck-widget type="legend" position="bottom-right" title="Layers" interactive></deck-widget>
-<deck-widget type="filter" layer="quakes" field="magnitude" position="top-left"></deck-widget>
-<deck-widget type="draw" target="sketch" modes="point line polygon" save="both"></deck-widget>
+<om-widget type="legend" position="bottom-right" title="Layers" interactive></om-widget>
+<om-widget type="filter" layer="quakes" field="magnitude" position="top-left"></om-widget>
+<om-widget type="draw" target="sketch" modes="point line polygon" save="both"></om-widget>
 ```
 
 Custom widget:
 
 ```html
-<deck-widget position="top-left">
+<om-widget position="top-left">
   <div id="out"></div>
-  <script type="deck/widget">
+  <script type="om/widget">
     this.watch = ["data:quakes", "viewport", "selection"];
     this.render = (ctx) => {
       const s = ctx.stats("quakes", "magnitude", { scope: "viewport" });
       this.$("#out").textContent = `${s.count} quakes`;
     };
   </script>
-</deck-widget>
+</om-widget>
 ```
 
 Widget context:
@@ -216,7 +216,7 @@ Widget context:
 
 Use `this.$()` and `this.root`; widgets render in shadow DOM.
 
-### `<deck-overlay>`
+### `<om-overlay>`
 
 Rich sparse HTML anchored to the map.
 
@@ -234,13 +234,13 @@ Templates:
 Example:
 
 ```html
-<deck-overlay id="detail" anchor-from="selection" visible="false">
+<om-overlay id="detail" anchor-from="selection" visible="false">
   <div><b>{{place}}</b> M {{magnitude}}</div>
-</deck-overlay>
-<deck-behavior on="click" layer="quakes" action="show-overlay" target="detail"></deck-behavior>
+</om-overlay>
+<om-behavior on="click" layer="quakes" action="show-overlay" target="detail"></om-behavior>
 ```
 
-### `<deck-behavior>`
+### `<om-behavior>`
 
 Declarative event to action binding.
 
@@ -265,21 +265,21 @@ Payload attributes are kebab-case and become camelCase payload keys.
 Example:
 
 ```html
-<deck-behavior on="click" layer="regions" action="zoom-to-feature" duration="1200ms"></deck-behavior>
+<om-behavior on="click" layer="regions" action="zoom-to-feature" duration="1200ms"></om-behavior>
 ```
 
 ### Stories
 
-Use `<deck-story>` with `<deck-step>` children. Stories are siblings of layers/overlays, not containers.
+Use `<om-story>` with `<om-step>` children. Stories are siblings of layers/overlays, not containers.
 
 ```html
-<deck-story id="tour" interrupt="pause">
-  <deck-step duration="2s" action="fly-to" center="[-122.44, 37.78]" zoom="12" curve></deck-step>
-  <deck-step duration="1s" action="show-overlay" target="intro" parallel></deck-step>
-  <deck-step duration="1500ms" fade layer="regions"></deck-step>
-  <deck-step duration="2s" trace layer="regions" feature-id="mission"></deck-step>
-</deck-story>
-<deck-widget type="player" story="tour" position="bottom-left"></deck-widget>
+<om-story id="tour" interrupt="pause">
+  <om-step duration="2s" action="fly-to" center="[-122.44, 37.78]" zoom="12" curve></om-step>
+  <om-step duration="1s" action="show-overlay" target="intro" parallel></om-step>
+  <om-step duration="1500ms" fade layer="regions"></om-step>
+  <om-step duration="2s" trace layer="regions" feature-id="mission"></om-step>
+</om-story>
+<om-widget type="player" story="tour" position="bottom-left"></om-widget>
 ```
 
 Story timing attributes:
@@ -295,15 +295,15 @@ Use declarative payloads for scrub-safe state: `visible="true"` when toggling, e
 Use a normal GeoJSON layer bound to a draw store plus a draw widget:
 
 ```html
-<deck-layer id="sketch" type="GeoJsonLayer" data="draw:sketch"
+<om-layer id="sketch" type="GeoJsonLayer" data="draw:sketch"
             get-fill-color="[80, 140, 255, 90]"
             get-line-color="[40, 90, 220]"
             point-radius-min-pixels="6"
             line-width-min-pixels="3"
-            stroked filled pickable></deck-layer>
-<deck-widget type="draw" target="sketch" position="top-left"
+            stroked filled pickable></om-layer>
+<om-widget type="draw" target="sketch" position="top-left"
              modes="point line polygon" save="both"
-             autosave="my-sketch"></deck-widget>
+             autosave="my-sketch"></om-widget>
 ```
 
 The draw widget supports points, lines, polygons, delete-last, clear, save, and autosave. Lines/polygons close with double-click or Enter; Escape cancels the in-progress shape.
@@ -313,13 +313,30 @@ The draw widget supports points, lines, polygons, delete-last, clear, save, and 
 ScenegraphLayer places GLB/glTF models at coordinates:
 
 ```html
-<deck-layer id="vehicles" type="ScenegraphLayer"
+<om-layer id="vehicles" type="ScenegraphLayer"
             scenegraph="./truck.glb"
             data="./vehicles.json"
             get-position="[$lon, $lat]"
             get-orientation="[0, $heading, 90]"
             get-scale="[1, 1, 1]"
-            lighting="pbr" pickable></deck-layer>
+            lighting="pbr" pickable></om-layer>
 ```
 
 Roll `90` stands Y-up glTF assets upright. Use `Tile3DLayer` for large 3D Tiles datasets.
+
+3D Tiles roots use `tileset`, not `data`, because OnlyMapJS reserves `data` for parsed datasets:
+
+```html
+<om-layer id="city" type="Tile3DLayer"
+            tileset="https://example.com/tileset.json"></om-layer>
+```
+
+For 3D Tiles LOD/refinement experiments, use:
+
+```html
+<om-layer id="city" type="Tile3DLayer"
+            tileset="https://example.com/tileset.json"
+            maximum-screen-space-error="2"
+            maximum-memory-usage="256"
+            view-distance-scale="0.85"></om-layer>
+```

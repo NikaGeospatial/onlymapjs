@@ -14,23 +14,23 @@
 </head>
 <body>
 
-  <deck-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre" validate>
+  <om-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre" validate>
 
-    <deck-layer id="points" type="ScatterplotLayer"
+    <om-layer id="points" type="ScatterplotLayer"
                 data="./data/bikes.json"
                 label="Bike racks" color="#e63946"
                 get-position="[$lon, $lat]"
-                pickable></deck-layer>
+                pickable></om-layer>
 
-    <deck-overlay id="points-detail" anchor-from="selection" visible="false">
+    <om-overlay id="points-detail" anchor-from="selection" visible="false">
       <div class="popup"><strong>{{name}}</strong></div>
-    </deck-overlay>
-    <deck-behavior on="click" layer="points" action="show-overlay"
-                   target="points-detail"></deck-behavior>
+    </om-overlay>
+    <om-behavior on="click" layer="points" action="show-overlay"
+                   target="points-detail"></om-behavior>
 
-    <deck-widget type="legend" title="Layers" position="top-right"></deck-widget>
+    <om-widget type="legend" title="Layers" position="top-right"></om-widget>
 
-  </deck-map>
+  </om-map>
 
 </body>
 </html>

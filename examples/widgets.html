@@ -21,37 +21,39 @@
     <a href="basemap.html">Basemap</a>
     <a href="columnar.html">Columnar / GeoArrow</a>
     <a href="scenegraph.html">3D models</a>
+    <a href="google-3d-tiles.html">Google 3D Tiles</a>
+    <a href="google-3d-flyby.html">3D Flyby</a>
     <a href="ais.html">Live AIS</a>
     <a href="fleet.html">Fleet (polling)</a>
     <a href="story.html">Map story</a>
   </header>
 
-  <deck-map center="[-122.42, 37.77]" zoom="12">
+  <om-map center="[-122.42, 37.77]" zoom="12">
 
-    <deck-layer id="bikes" type="ScatterplotLayer"
+    <om-layer id="bikes" type="ScatterplotLayer"
                 data="./data/bikes.json"
                 label="Bike racks (radius ~ size)" color="#e6550d"
                 get-position="[$lon, $lat]"
                 get-radius="scale($size, sqrt, [3, 30], domain=[0, 100])"
-                radius-units="pixels" pickable></deck-layer>
+                radius-units="pixels" pickable></om-layer>
 
     <!-- Legend enumerates every layer automatically — no per-layer authoring. -->
-    <deck-widget type="legend" title="Layers" interactive position="top-right"></deck-widget>
+    <om-widget type="legend" title="Layers" interactive position="top-right"></om-widget>
 
     <!-- Zoom in/out — drives RuntimeCore.zoomBy() through the same
          action pipeline a click-to-zoom-to-feature behavior would use. -->
-    <deck-widget type="zoom-controls" position="bottom-right"></deck-widget>
+    <om-widget type="zoom-controls" position="bottom-right"></om-widget>
 
     <!-- Recomputes its "nice" meter/km label on every pan/zoom. -->
-    <deck-widget type="scale-bar" position="bottom-left"></deck-widget>
+    <om-widget type="scale-bar" position="bottom-left"></om-widget>
 
-    <deck-widget type="attribution" text="OnlyMapJS widgets example" position="bottom-left"
-                 style="margin-bottom: 28px;"></deck-widget>
+    <om-widget type="attribution" text="OnlyMapJS widgets example" position="bottom-left"
+                 style="margin-bottom: 28px;"></om-widget>
 
     <!-- ctx.dataInViewport("bikes") re-runs on every pan/zoom (Phase 4's
          deliverable: "LLM can write a Vega-Lite histogram that updates on
          pan/zoom") — try panning the racks in/out of view. -->
-    <deck-widget type="vega-lite" layer="bikes" watch="viewport data:bikes" title="Bike rack size (in view)"
+    <om-widget type="vega-lite" layer="bikes" watch="viewport data:bikes" title="Bike rack size (in view)"
                  position="top-left">
       <script type="application/json">
         {
@@ -62,9 +64,9 @@
           }
         }
       </script>
-    </deck-widget>
+    </om-widget>
 
-  </deck-map>
+  </om-map>
 
 </body>
 </html>

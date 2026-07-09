@@ -4,27 +4,27 @@ A story turns a map into a narrated sequence: fly here, reveal this, highlight t
 
 ## The one rule
 
-**The map describes a scene; the story describes intent over time about that scene.** `<deck-story>` is a *sibling* of your layers, never a container — steps reference elements by id, and a step that contains an element is a validation **error**. Delete the story and the map is byte-for-byte the same map.
+**The map describes a scene; the story describes intent over time about that scene.** `<om-story>` is a *sibling* of your layers, never a container — steps reference elements by id, and a step that contains an element is a validation **error**. Delete the story and the map is byte-for-byte the same map.
 
 ```html
-<deck-map center="[-122.35, 37.85]" zoom="10" basemap="maplibre">
-  <deck-layer id="regions" .../>                       <!-- a complete, ordinary map -->
-  <deck-overlay id="chapter" visible="false">…</deck-overlay>
+<om-map center="[-122.35, 37.85]" zoom="10" basemap="maplibre">
+  <om-layer id="regions" ...></om-layer>             <!-- a complete, ordinary map -->
+  <om-overlay id="chapter" visible="false">…</om-overlay>
 
-  <deck-story id="tour" interrupt="pause">
-    <deck-step duration="3s" action="fly-to" center="[-122.44, 37.78]" zoom="12" curve></deck-step>
-    <deck-step duration="4s" action="show-overlay" target="chapter" parallel delay="1500ms"></deck-step>
-    <deck-step duration="2s" action="hide-overlay" target="chapter" delay="1s"></deck-step>
-    <deck-step duration="2s" action="toggle-layer" layer="bikes" visible="true"></deck-step>
-  </deck-story>
+  <om-story id="tour" interrupt="pause">
+    <om-step duration="3s" action="fly-to" center="[-122.44, 37.78]" zoom="12" curve></om-step>
+    <om-step duration="4s" action="show-overlay" target="chapter" parallel delay="1500ms"></om-step>
+    <om-step duration="2s" action="hide-overlay" target="chapter" delay="1s"></om-step>
+    <om-step duration="2s" action="toggle-layer" layer="bikes" visible="true"></om-step>
+  </om-story>
 
-  <deck-widget type="player" story="tour" position="bottom-left"></deck-widget>
-</deck-map>
+  <om-widget type="player" story="tour" position="bottom-left"></om-widget>
+</om-map>
 ```
 
 ## Steps
 
-A step is `action="…"` plus payload attributes — the **same actions, same kebab-case payload rule** as `<deck-behavior>` and `data-emit` buttons. Anything an action can do, a step can do, including your own `DeckMap.registerAction` actions.
+A step is `action="…"` plus payload attributes — the **same actions, same kebab-case payload rule** as `<om-behavior>` and `data-emit` buttons. Anything an action can do, a step can do, including your own `OmMap.registerAction` actions.
 
 Timing attributes (everything else rides into the payload):
 
@@ -42,10 +42,10 @@ Sequential steps wait for **everything** before them to finish — a short `para
 
 Playback is three actions — `story-play`, `story-pause`, `story-seek {story, t}` — so every dispatch surface works:
 
-- **Attributes:** `autoplay` (starts after `deck-map-ready`), `loop`.
-- **The built-in player:** `<deck-widget type="player" story="tour">` — play/pause, seek bar, elapsed/total. It's dumb chrome: it emits the three actions and re-renders off the story's `deck-story-tick` events, so replacing it is just your own `data-emit` buttons: `<button data-emit="story-play" data-story="tour">▶</button>`.
-- **Behaviors:** `<deck-behavior on="click" layer="regions" action="story-play" story="tour">` — click to start a tour.
-- **Script:** `storyEl.play() / pause() / seek(ms)`, plus `state`, `currentTime`, `duration` properties and the `deck-story-tick` event.
+- **Attributes:** `autoplay` (starts after `om-map-ready`), `loop`.
+- **The built-in player:** `<om-widget type="player" story="tour">` — play/pause, seek bar, elapsed/total. It's dumb chrome: it emits the three actions and re-renders off the story's `om-story-tick` events, so replacing it is just your own `data-emit` buttons: `<button data-emit="story-play" data-story="tour">▶</button>`.
+- **Behaviors:** `<om-behavior on="click" layer="regions" action="story-play" story="tour">` — click to start a tour.
+- **Script:** `storyEl.play() / pause() / seek(ms)`, plus `state`, `currentTime`, `duration` properties and the `om-story-tick` event.
 
 **One active story per map** — playing story B pauses story A. **`interrupt="pause"`** (the default) pauses playback when the user grabs the map (pointer-down or wheel); `interrupt="ignore"` opts out.
 
@@ -72,7 +72,7 @@ expect(overlay.getAttribute("visible")).toBe("false");
 
 ## Effect verbs
 
-Three intent-level verbs, usable as step shorthands (`<deck-step fade layer="regions" duration="1s">`) or as plain actions from behaviors and buttons (`data-emit="pulse" data-layer="quakes"`):
+Three intent-level verbs, usable as step shorthands (`<om-step fade layer="regions" duration="1s">`) or as plain actions from behaviors and buttons (`data-emit="pulse" data-layer="quakes"`):
 
 | Verb | What it does | Mechanics |
 |---|---|---|
@@ -87,7 +87,7 @@ Whole-layer `trace` needs per-vertex time, which is TripsLayer's purpose — giv
 ### Per-feature trace: `trace layer="regions" feature-id="mission"`
 
 ```html
-<deck-step duration="3s" trace layer="regions" feature-id="mission"></deck-step>
+<om-step duration="3s" trace layer="regions" feature-id="mission"></om-step>
 ```
 
 The Mission polygon's outline draws itself around the perimeter (75% of the slot, at uniform speed — timestamps are synthesized from cumulative distance), then the real feature reappears as the outline dissolves. Everything underneath is runtime-managed and removed afterward: the target feature is hidden by swapping the layer's data to "everyone else" through the per-frame channel (the other features are untouched, and your markup never changes), and the outline is a temporary `TripsLayer` element the runtime appends and deletes — it never appears in the legend or `ctx.layers`. Optional `color="[255, 120, 40]"` styles the outline.
@@ -95,9 +95,9 @@ The Mission polygon's outline draws itself around the perimeter (75% of the slot
 **Parallel traces compose.** Fire a trace for every feature in the same beat and they all draw at once — the hides accumulate (the layer shows the union of "everyone else", i.e. nothing, while all outlines draw) and each feature reveals independently as its own trace finishes:
 
 ```html
-<deck-step duration="3s" trace layer="regions" feature-id="north-beach" parallel></deck-step>
-<deck-step duration="3s" trace layer="regions" feature-id="mission" parallel></deck-step>
-<deck-step duration="3s" trace layer="regions" feature-id="sunset" parallel></deck-step>
+<om-step duration="3s" trace layer="regions" feature-id="north-beach" parallel></om-step>
+<om-step duration="3s" trace layer="regions" feature-id="mission" parallel></om-step>
+<om-step duration="3s" trace layer="regions" feature-id="sunset" parallel></om-step>
 ```
 
 Start the layer at `visible="false"` and turn it on in the same beat for a "draws itself onto an empty map" opening.
@@ -105,7 +105,7 @@ Start the layer at `visible="false"` and turn it on in the same beat for a "draw
 It's also a plain action, so **click-to-trace** is one line — clicking any polygon in the layer makes it draw itself:
 
 ```html
-<deck-behavior on="click" layer="regions" action="trace" duration="2s"></deck-behavior>
+<om-behavior on="click" layer="regions" action="trace" duration="2s"></om-behavior>
 ```
 
 One honest limit: point features have no outline to trace, so they fall back to `fade`. Scrubbing a story mid-trace cleans up the temp layer and every patch.
@@ -113,7 +113,7 @@ One honest limit: point features have no outline to trace, so they fall back to 
 ### Populate: `populate layer="bikes"`
 
 ```html
-<deck-step duration="2500ms" populate layer="bikes"></deck-step>
+<om-step duration="2500ms" populate layer="bikes"></om-step>
 ```
 
 The layer's rows appear one by one until it's fully populated — each frame only moves the GPU filter's range bound (a uniform update, no data re-upload), and the patch clears itself so the layer ends on its authored props. Appearance **order**:
@@ -122,7 +122,7 @@ The layer's rows appear one by one until it's fully populated — each frame onl
 - `field="capacity"` in the payload — order by any numeric field without authoring a filter;
 - neither — data order.
 
-Works from every dispatch surface, e.g. populate on load: `<deck-behavior on="load" action="populate" layer="bikes" duration="3s">`. GeoJSON layers need an authored `filter-field` to populate (a live composite can't take a runtime filter accessor); without one it warns and falls back to `fade`.
+Works from every dispatch surface, e.g. populate on load: `<om-behavior on="load" action="populate" layer="bikes" duration="3s">`. GeoJSON layers need an authored `filter-field` to populate (a live composite can't take a runtime filter accessor); without one it warns and falls back to `fade`.
 
 ## Animation primitives (usable without stories)
 

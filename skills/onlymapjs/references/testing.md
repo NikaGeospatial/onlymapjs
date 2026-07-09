@@ -4,12 +4,12 @@ Use this reference when a user asks to debug, validate, review, or test an OnlyM
 
 ## Static Validation
 
-Use `DeckMap.validate(htmlString)` before finalizing agent-written maps.
+Use `OmMap.validate(htmlString)` before finalizing agent-written maps.
 
 ```ts
-import { DeckMap } from "onlymapjs";
+import { OmMap } from "onlymapjs";
 
-const result = DeckMap.validate(html);
+const result = OmMap.validate(html);
 if (!result.valid) {
   console.log(result.errors);
 }
@@ -20,7 +20,7 @@ Errors and warnings have:
 ```ts
 {
   severity: "error" | "warning",
-  element: "deck-layer#quakes",
+  element: "om-layer#quakes",
   attribute: "get-position",
   message: "...",
   fix: "..."
@@ -44,10 +44,10 @@ Common validation failures:
 
 ## Snapshot IR
 
-Use `DeckMap.snapshotIR(html)` to inspect what a manifest means without WebGL or network.
+Use `OmMap.snapshotIR(html)` to inspect what a manifest means without WebGL or network.
 
 ```ts
-expect(DeckMap.snapshotIR(html)).toMatchSnapshot();
+expect(OmMap.snapshotIR(html)).toMatchSnapshot();
 ```
 
 The snapshot contains resolved layer descriptors. Accessors appear as behavioral fingerprints, so expression changes show up in diffs without serializing functions.
@@ -62,17 +62,17 @@ import "onlymapjs";
 import { mountForTest } from "onlymapjs";
 
 const h = await mountForTest(`
-  <deck-map center="[-122.42, 37.77]" zoom="11">
-    <deck-layer id="points" type="ScatterplotLayer" get-position="[$lon, $lat]" pickable>
+  <om-map center="[-122.42, 37.77]" zoom="11">
+    <om-layer id="points" type="ScatterplotLayer" get-position="[$lon, $lat]" pickable>
       <script type="application/json">
         [{ "id": "p1", "name": "A", "lon": -122.42, "lat": 37.77 }]
       </script>
-    </deck-layer>
-    <deck-overlay id="detail" anchor-from="selection" visible="false">
+    </om-layer>
+    <om-overlay id="detail" anchor-from="selection" visible="false">
       <div>{{name}}</div>
-    </deck-overlay>
-    <deck-behavior on="click" layer="points" action="show-overlay" target="detail"></deck-behavior>
-  </deck-map>
+    </om-overlay>
+    <om-behavior on="click" layer="points" action="show-overlay" target="detail"></om-behavior>
+  </om-map>
 `);
 
 await h.pick({ layer: "points", featureId: "p1" });
@@ -99,14 +99,14 @@ Use Playwright only for pixels, real GPU picking, basemap composition, or asset 
 Wait for readiness:
 
 ```ts
-await page.evaluate(() => document.querySelector("deck-map").ready);
+await page.evaluate(() => document.querySelector("om-map").ready);
 ```
 
 Project data coordinates to click pixels:
 
 ```ts
-const p = await page.evaluate(() => document.querySelector("deck-map").projectInternal([-122.42, 37.77]));
-const box = await page.locator("deck-map").boundingBox();
+const p = await page.evaluate(() => document.querySelector("om-map").projectInternal([-122.42, 37.77]));
+const box = await page.locator("om-map").boundingBox();
 await page.mouse.click(box.x + p[0], box.y + p[1]);
 ```
 
@@ -121,6 +121,6 @@ Do not use sleeps. Wait for `ready`, DOM state, screenshots, or `expect.poll`.
 5. Does every `scale()` include `domain=`?
 6. Are behaviors pointing at existing `layer`/`target` ids?
 7. Is `pickable` present where click/hover behaviors are expected?
-8. Are credentials configured through `DeckMap.configureData`, not markup?
+8. Are credentials configured through `OmMap.configureData`, not markup?
 9. Is the relevant CSS imported when using MapLibre basemaps?
 10. Is a story step setting state rather than toggling ambiguous state?

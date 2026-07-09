@@ -2,7 +2,7 @@
   "version": 1.1,
   "tags": [
     {
-      "name": "deck-map",
+      "name": "om-map",
       "description": "The map root. Layers, overlays, behaviors, widgets, and stories are children.",
       "attributes": [
         {
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "name": "deck-layer",
+      "name": "om-layer",
       "description": "A deck.gl layer declared as markup — attributes map to props (kebab-case), get-* attributes compile as accessors.",
       "attributes": [
         {
@@ -352,6 +352,30 @@
           "description": "deck.gl _lighting."
         },
         {
+          "name": "tileset",
+          "description": "deck.gl data."
+        },
+        {
+          "name": "load-options",
+          "description": "deck.gl loadOptions."
+        },
+        {
+          "name": "maximum-screen-space-error",
+          "description": "deck.gl loadOptions.tileset.maximumScreenSpaceError."
+        },
+        {
+          "name": "maximum-memory-usage",
+          "description": "deck.gl loadOptions.tileset.maximumMemoryUsage."
+        },
+        {
+          "name": "view-distance-scale",
+          "description": "deck.gl loadOptions.tileset.viewDistanceScale."
+        },
+        {
+          "name": "point-size",
+          "description": "deck.gl pointSize."
+        },
+        {
           "name": "operation",
           "description": "deck.gl operation."
         },
@@ -382,10 +406,6 @@
         {
           "name": "parameters",
           "description": "deck.gl parameters."
-        },
-        {
-          "name": "load-options",
-          "description": "deck.gl loadOptions."
         },
         {
           "name": "transitions",
@@ -602,10 +622,6 @@
         {
           "name": "get-path",
           "description": "Accessor for deck.gl getPath — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "point-size",
-          "description": "deck.gl pointSize."
         },
         {
           "name": "get-normal",
@@ -1004,14 +1020,6 @@
           "description": "deck.gl workerUrl."
         },
         {
-          "name": "get-point-color",
-          "description": "Accessor for deck.gl getPointColor — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "loader",
-          "description": "deck.gl loader."
-        },
-        {
           "name": "fade-trail",
           "description": "deck.gl fadeTrail."
         },
@@ -1158,7 +1166,7 @@
       ]
     },
     {
-      "name": "deck-overlay",
+      "name": "om-overlay",
       "description": "Rich HTML anchored to the map: a static coordinate, the current selection, or a feature's own geometry.",
       "attributes": [
         {
@@ -1244,7 +1252,7 @@
       ]
     },
     {
-      "name": "deck-behavior",
+      "name": "om-behavior",
       "description": "Declarative event → action wiring. Every other attribute becomes a payload key (kebab→camel).",
       "attributes": [
         {
@@ -1364,8 +1372,8 @@
       ]
     },
     {
-      "name": "deck-widget",
-      "description": "Map UI chrome — built-in types or inline <script type=\"deck/widget\"> render logic.",
+      "name": "om-widget",
+      "description": "Map UI chrome — built-in types or inline <script type=\"om/widget\"> render logic.",
       "attributes": [
         {
           "name": "type",
@@ -1488,7 +1496,7 @@
       ]
     },
     {
-      "name": "deck-story",
+      "name": "om-story",
       "description": "A guided tour: time → action. Steps reference layers/overlays by id — never contain them.",
       "attributes": [
         {
@@ -1497,7 +1505,7 @@
         },
         {
           "name": "autoplay",
-          "description": "Start after deck-map-ready."
+          "description": "Start after om-map-ready."
         },
         {
           "name": "loop",
@@ -1524,7 +1532,7 @@
       ]
     },
     {
-      "name": "deck-step",
+      "name": "om-step",
       "description": "One story step: action=\"…\" plus payload attributes, or a bare effect verb (trace / pulse / fade / populate).",
       "attributes": [
         {

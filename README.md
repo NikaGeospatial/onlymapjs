@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/NikaGeospatial/onlymapjs/main/onlymapbanner.png" alt="OnlyMapJS" width="100%">
+</p>
+
 # OnlyMapJS
 
 **Interactive WebGL maps from plain HTML.** Write a declarative manifest — layers, widgets, popups, behaviors as custom elements — and OnlyMapJS drives [deck.gl](https://deck.gl) underneath: rendering, data loading, live updates, picking, and UI, with no build step and no imperative glue code.
@@ -5,28 +9,28 @@
 ```html
 <script type="module" src="onlymapjs"></script>
 
-<deck-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre">
-  <deck-layer id="quakes" type="ScatterplotLayer" data="./quakes.json"
+<om-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre">
+  <om-layer id="quakes" type="ScatterplotLayer" data="./quakes.json"
               label="Earthquakes" color="#b30000"
               get-position="[$lon, $lat]"
               get-fill-color="scale($magnitude, sequential, ['#fee8c8','#b30000'], domain=[0,7])"
               get-radius="scale($magnitude, sqrt, [2, 18], domain=[0,7])"
-              radius-units="pixels" pickable></deck-layer>
+              radius-units="pixels" pickable></om-layer>
 
-  <deck-widget type="legend" position="top-right"></deck-widget>
+  <om-widget type="legend" position="top-right"></om-widget>
 
-  <deck-overlay id="detail" anchor-from="selection" visible="false">
+  <om-overlay id="detail" anchor-from="selection" visible="false">
     <div><b>{{place}}</b> — M {{magnitude}}</div>
-  </deck-overlay>
-  <deck-behavior on="click" layer="quakes" action="show-overlay" target="detail"></deck-behavior>
-</deck-map>
+  </om-overlay>
+  <om-behavior on="click" layer="quakes" action="show-overlay" target="detail"></om-behavior>
+</om-map>
 ```
 
 That's a complete app: a no-token MapLibre basemap, data-driven colors and sizes, a legend, and a click-for-details popup. Edit any attribute on the live DOM and the map updates — the manifest *is* the state.
 
-It's also designed to be written **by AI agents**: HTML is a reliable generation target, [`llms.txt`](llms.txt) teaches the format, and `DeckMap.validate()` returns structured errors with actionable fixes — a real feedback loop instead of a blank canvas.
+It's also designed to be written **by AI agents**: HTML is a reliable generation target, [`llms.txt`](llms.txt) teaches the format, and `OmMap.validate()` returns structured errors with actionable fixes — a real feedback loop instead of a blank canvas.
 
-> ⚠️ **Status: v0.1, pre-release.** APIs may still move. License terms are in [LICENSE.md](LICENSE.md).
+> ⚠️ **Status: v0.1, pre-release.** Not yet published to npm. Commercial licensing terms are in [LICENSE.md](LICENSE.md); APIs may still move.
 
 ## Running it today
 
@@ -46,12 +50,12 @@ Five elements, one rule: **attributes are kebab-case versions of deck.gl props**
 
 | Element | Role |
 |---|---|
-| `<deck-map>` | The map. `center`, `zoom`, `pitch`, `bearing`; `basemap="maplibre"` (default style or any style URL — no token) or `"none"` (standalone canvas); `validate` for a live on-page error panel. |
-| `<deck-layer>` | Any of **33 layer types** by name — all of deck.gl's core, geo, aggregation, and mesh layers (Scatterplot, GeoJson, Arc, Path, Heatmap, Hexagon, Trips, Tile, Tile3D, Scenegraph, …) plus the built-in `PopupLayer` for WebGL badges/labels at scale. `id` required; `label`/`color` feed the legend. |
-| `<deck-widget>` | UI panels. Built-ins: `legend`, `layer-switcher`, `zoom-controls`, `scale-bar`, `attribution`, `filter`, `draw`, `vega-lite` (live charts). Or write your own inline with HTML + a `<script type="deck/widget">`. |
-| `<deck-overlay>` | Rich HTML anchored to a map location — a static `anchor="[lng, lat]"`, the current selection, or a feature's own geometry via `anchor-layer`/`anchor-feature-id`. `{{field}}` interpolates the picked feature, HTML-escaped by default. |
-| `<deck-behavior>` | Declarative interactions: `on="click|hover|drag|load|data-loaded"` → a named action. |
-| `<deck-story>` | A storyboard: `<deck-step>` children fire actions on a timeline. Controlled by the `player` widget, behaviors, or `storyEl.play()/pause()/seek()`. |
+| `<om-map>` | The map. `center`, `zoom`, `pitch`, `bearing`; `basemap="maplibre"` (default style or any style URL — no token) or `"none"` (standalone canvas); `validate` for a live on-page error panel. |
+| `<om-layer>` | Any of **33 layer types** by name — all of deck.gl's core, geo, aggregation, and mesh layers (Scatterplot, GeoJson, Arc, Path, Heatmap, Hexagon, Trips, Tile, Tile3D, Scenegraph, …) plus the built-in `PopupLayer` for WebGL badges/labels at scale. `id` required; `label`/`color` feed the legend. |
+| `<om-widget>` | UI panels. Built-ins: `legend`, `layer-switcher`, `zoom-controls`, `scale-bar`, `attribution`, `filter`, `draw`, `vega-lite` (live charts). Or write your own inline with HTML + a `<script type="om/widget">`. |
+| `<om-overlay>` | Rich HTML anchored to a map location — a static `anchor="[lng, lat]"`, the current selection, or a feature's own geometry via `anchor-layer`/`anchor-feature-id`. `{{field}}` interpolates the picked feature, HTML-escaped by default. |
+| `<om-behavior>` | Declarative interactions: `on="click|hover|drag|load|data-loaded"` → a named action. |
+| `<om-story>` | A storyboard: `<om-step>` children fire actions on a timeline. Controlled by the `player` widget, behaviors, or `storyEl.play()/pause()/seek()`. |
 
 ### Accessors without JavaScript
 
@@ -64,7 +68,7 @@ get-fill-color="$value > 100 ? [255,0,0] : [0,128,255]"
 get-fill-color="scale($depth, sequential, ['#ffffcc','#800026'], domain=[0,700])"
 ```
 
-Built-ins: `scale()` (types: `sequential`, `diverging`, `threshold`, `sqrt`, `log`, `pow` — explicit `domain=` required), `colorRamp()`, `clamp()`, `lerp()`, and `Math.*`. Multi-line accessors go in a `<script type="deck/accessors">` block; genuinely arbitrary JS needs an explicit `js` opt-in on the layer. Untrusted (agent-written) expressions are safe by construction: the compiler is an AST whitelist, not an eval.
+Built-ins: `scale()` (types: `sequential`, `diverging`, `threshold`, `sqrt`, `log`, `pow` — explicit `domain=` required), `colorRamp()`, `clamp()`, `lerp()`, and `Math.*`. Multi-line accessors go in a `<script type="om/accessors">` block; genuinely arbitrary JS needs an explicit `js` opt-in on the layer. Untrusted (agent-written) expressions are safe by construction: the compiler is an AST whitelist, not an eval.
 
 ### Data sources
 
@@ -76,20 +80,20 @@ Built-ins: `scale()` (types: `sequential`, `diverging`, `threshold`, `sqrt`, `lo
 | Columnar JSON | `{"columns": {"lon": [...], ...}}` | same columnar fast path without Arrow tooling |
 | **CSV / TSV** | `data="./quakes.csv"` | parsed to typed columns (lazy ~48 KB chunk); numbers auto-typed, quoted fields intact |
 | **Shapefile** | `data="./countries.shp"` | geometry + `.dbf` attributes joined into GeoJSON features (sidecars fetched with your auth config) |
-| **KML** | `data="./tour.kml"` | placemarks → GeoJSON features; other formats plug in via `DeckMap.registerFormat` |
-| **WebSocket stream** | `data="wss://feed" key="id" flush="250ms" source="myFormat"` | upsert-by-key, burst coalescing, auto-reconnect; decode any format via `DeckMap.registerSource` |
+| **KML** | `data="./tour.kml"` | placemarks → GeoJSON features; other formats plug in via `OmMap.registerFormat` |
+| **WebSocket stream** | `data="wss://feed" key="id" flush="250ms" source="myFormat"` | upsert-by-key, burst coalescing, auto-reconnect; decode any format via `OmMap.registerSource` |
 | **Polled REST snapshot** | `data="/api/fleet.json" refresh="5s"` | full-snapshot replace per poll; outages keep the last good data |
-| **Draw store** | `data="draw:sketch"` | live in-memory GeoJSON feature store written by `<deck-widget type="draw" target="sketch">` |
+| **Draw store** | `data="draw:sketch"` | live in-memory GeoJSON feature store written by `<om-widget type="draw" target="sketch">` |
 
-Private endpoints: `DeckMap.configureData({ headers, credentials, fetch })` — applied to every fetch including refreshes. Credentials stay out of markup by design. Full guide: [docs/live-data.md](docs/live-data.md).
+Private endpoints: `OmMap.configureData({ headers, credentials, fetch })` — applied to every fetch including refreshes. Credentials stay out of markup by design. Full guide: [docs/live-data.md](docs/live-data.md).
 
 ### Interaction
 
-Ten built-in actions wire to picks, widget buttons (`data-emit`), or script (`ctx.emit`) with one shared payload contract: `show-overlay`, `hide-overlay`, `show-tooltip`, `hide-tooltip`, `toggle-layer`, `highlight-feature`, `zoom-to-feature`, `filter-layer`, `zoom-in`, `zoom-out` — plus `DeckMap.registerAction` for your own.
+Ten built-in actions wire to picks, widget buttons (`data-emit`), or script (`ctx.emit`) with one shared payload contract: `show-overlay`, `hide-overlay`, `show-tooltip`, `hide-tooltip`, `toggle-layer`, `highlight-feature`, `zoom-to-feature`, `filter-layer`, `zoom-in`, `zoom-out` — plus `OmMap.registerAction` for your own.
 
 **Animation:** camera moves accept a duration — `map.flyTo(coords, zoom, { duration: 1200, curve: true })`, or the `fly-to` action (`center`/`zoom`/`pitch`/`bearing`/`duration`) from any behavior or button; `prefers-reduced-motion` is honored (moves become instant, final state identical). Per-prop GPU transitions via the `transition` attribute: `transition="get-fill-color 800ms"` fades color changes; on a streaming layer, `transition="get-position 300ms"` makes entities glide between updates.
 
-**Map stories:** a guided tour as markup — `<deck-story>` holds `<deck-step>` children that fire the same actions behaviors use, on a timeline (`duration`, `delay`, `parallel`); the built-in `type="player"` widget gives play/pause/scrub, seeking restores the scene's captured initial state, one story is active per map, and grabbing the map pauses playback. Effect verbs — `fade`, `pulse`, `trace` (progressive TripsLayer draw-on; with `feature-id`, a single polygon draws itself on inside its own layer), and `populate` (rows drop in one by one via a GPU filter sweep) — work as step shorthands or plain actions. The story is a sibling that references layers by id — delete it and the map is unchanged. Guide: [docs/stories.md](docs/stories.md).
+**Map stories:** a guided tour as markup — `<om-story>` holds `<om-step>` children that fire the same actions behaviors use, on a timeline (`duration`, `delay`, `parallel`); the built-in `type="player"` widget gives play/pause/scrub, seeking restores the scene's captured initial state, one story is active per map, and grabbing the map pauses playback. Effect verbs — `fade`, `pulse`, `trace` (progressive TripsLayer draw-on; with `feature-id`, a single polygon draws itself on inside its own layer), and `populate` (rows drop in one by one via a GPU filter sweep) — work as step shorthands or plain actions. The story is a sibling that references layers by id — delete it and the map is unchanged. Guide: [docs/stories.md](docs/stories.md).
 
 GPU filtering is declarative — `filter-field="magnitude" filter-range="[4,10]"` — updates live from the built-in `filter` slider widget, and widget statistics stay coherent with what the map shows (`ctx.stats` respects the active filter unless you opt out).
 
@@ -99,7 +103,7 @@ Custom widget scripts receive `ctx`: layer metadata, `viewport` (bounds/zoom/pro
 
 ## Editor IntelliSense
 
-`onlymapjs.html-data.json` (generated from the layer registry — `npm run gen:html-data`) gives autocomplete and hover docs for every `deck-*` element and attribute in VS Code and any editor speaking the [html-customData](https://github.com/microsoft/vscode-custom-data) format:
+`onlymapjs.html-data.json` (generated from the layer registry — `npm run gen:html-data`) gives autocomplete and hover docs for every `om-*` element and attribute in VS Code and any editor speaking the [html-customData](https://github.com/microsoft/vscode-custom-data) format:
 
 ```bash
 npx onlymapjs init
@@ -139,7 +143,7 @@ npx -y skills add <owner>/<repo> --list
 ## Validation — the feedback loop
 
 ```js
-const result = DeckMap.validate(manifestHtml);
+const result = OmMap.validate(manifestHtml);
 // { valid, errors: [{ severity, element, attribute, message, fix }], warnings: [...] }
 ```
 
@@ -155,7 +159,7 @@ await h.pick({ layer: "quakes", featureId: "q1" }); // same code path as a real 
 expect(overlay.shadowRoot.textContent).toContain("M 6.5");
 ```
 
-Plus `DeckMap.snapshotIR(html)` to lock down what a manifest *means* in a snapshot test, and `await mapEl.ready` / the `deck-map-ready` event to de-flake browser e2e tests. Full guide: [docs/testing.md](docs/testing.md).
+Plus `OmMap.snapshotIR(html)` to lock down what a manifest *means* in a snapshot test, and `await mapEl.ready` / the `om-map-ready` event to de-flake browser e2e tests. Full guide: [docs/testing.md](docs/testing.md).
 
 ## 3D
 
@@ -163,8 +167,8 @@ Plus `DeckMap.snapshotIR(html)` to lock down what a manifest *means* in a snapsh
 
 ## Programmatic surface
 
-- **`DeckMap.*`** — `validate`, `snapshotIR`, `registerLayer`, `registerWidget`, `registerAction`, `registerSource`, `registerFormat`, `configureData`, `getLayerSchema`
-- **On a `<deck-map>` element** — `ready` (promise), `flyTo(coords, zoom?)`, `setLayerVisible(id, bool)`, `getLayers()`, `emit(action, payload)`; `document.querySelector("deck-map")` is fully typed
+- **`OmMap.*`** — `validate`, `snapshotIR`, `registerLayer`, `registerWidget`, `registerAction`, `registerSource`, `registerFormat`, `configureData`, `getLayerSchema`
+- **On a `<om-map>` element** — `ready` (promise), `flyTo(coords, zoom?)`, `setLayerVisible(id, bool)`, `getLayers()`, `emit(action, payload)`; `document.querySelector("om-map")` is fully typed
 - **Testing** — `mountForTest`, and imports are SSR-safe (importing in Node/jsdom never touches browser globals)
 
 ## Not implemented yet (honestly)

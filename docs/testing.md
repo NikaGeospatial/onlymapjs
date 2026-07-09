@@ -6,17 +6,17 @@ This guide is the complete workflow. It assumes a page like this (a manifest in 
 
 ```html
 <!-- public/dashboard.html -->
-<deck-map center="[-122.42, 37.77]" zoom="11">
-  <deck-layer id="quakes" type="ScatterplotLayer" data="./quakes.json"
+<om-map center="[-122.42, 37.77]" zoom="11">
+  <om-layer id="quakes" type="ScatterplotLayer" data="./quakes.json"
               get-position="[$lon, $lat]"
               get-fill-color="scale($magnitude, sequential, ['#fee8c8','#b30000'], domain=[0,7])"
-              filter-field="magnitude" filter-range="[0, 10]" pickable></deck-layer>
-  <deck-overlay id="detail" anchor-from="selection" visible="false">
+              filter-field="magnitude" filter-range="[0, 10]" pickable></om-layer>
+  <om-overlay id="detail" anchor-from="selection" visible="false">
     <div><b>{{place}}</b> — M {{magnitude}}</div>
-  </deck-overlay>
-  <deck-behavior on="click" layer="quakes" action="show-overlay" target="detail"></deck-behavior>
-  <deck-widget id="stats" position="top-left"> ... </deck-widget>
-</deck-map>
+  </om-overlay>
+  <om-behavior on="click" layer="quakes" action="show-overlay" target="detail"></om-behavior>
+  <om-widget id="stats" position="top-left"> ... </om-widget>
+</om-map>
 ```
 
 ## The three tiers
@@ -61,16 +61,16 @@ Whatever surrounds the map — data transforms, URL builders, config generation.
 ```ts
 // test/manifest.test.ts
 // @vitest-environment happy-dom
-import { DeckMap } from "onlymapjs";
+import { OmMap } from "onlymapjs";
 import { PAGE } from "./manifest";
 
 it("manifest is valid", () => {
-  const result = DeckMap.validate(PAGE);
+  const result = OmMap.validate(PAGE);
   expect(result.errors).toEqual([]); // on failure: structured entries, each with a `fix` instruction
 });
 
 it("manifest meaning is locked", () => {
-  expect(DeckMap.snapshotIR(PAGE)).toMatchSnapshot();
+  expect(OmMap.snapshotIR(PAGE)).toMatchSnapshot();
 });
 ```
 
@@ -131,7 +131,7 @@ Keep this thin — two to five tests — because the logic is already covered be
 
 1. **`await mapEl.ready`** — resolves when the renderer initialized *and* the first reconcile ran *and* every declared `data` URL settled. Never `waitForTimeout`.
 2. **`mapEl.projectInternal([lng, lat])`** — derive click/hover pixels from the map's own projection instead of hardcoding coordinates.
-3. **Typed lookups** — `document.querySelector("deck-map")` is fully typed (no casts) once the library is imported anywhere in your typechecked graph.
+3. **Typed lookups** — `document.querySelector("om-map")` is fully typed (no casts) once the library is imported anywhere in your typechecked graph.
 
 ```ts
 // tier-3 Playwright spec (see package.json test:e2e)
@@ -139,15 +139,15 @@ import { test, expect } from "@playwright/test";
 
 test("dashboard renders and real picking works", async ({ page }) => {
   await page.goto("/dashboard.html");
-  await page.evaluate(() => document.querySelector("deck-map")!.ready);
+  await page.evaluate(() => document.querySelector("om-map")!.ready);
 
   // Derive the pixel from data the page actually loaded — datasets change.
   const target = await page.evaluate(() => {
-    const map = document.querySelector("deck-map")!;
+    const map = document.querySelector("om-map")!;
     const quake = (map.getLayers().find((l) => l.id === "quakes")!.data as { lon: number; lat: number }[])[0];
     return map.projectInternal([quake.lon, quake.lat]);
   });
-  const box = (await page.locator("deck-map").boundingBox())!;
+  const box = (await page.locator("om-map").boundingBox())!;
   await page.mouse.click(box.x + target![0], box.y + target![1]);
 
   await expect(page.locator("#detail").getByText(/M \d/)).toBeVisible(); // locators pierce open shadow roots
@@ -162,4 +162,4 @@ For more patterns — settle-by-observation screenshot polling for repaint asser
 
 ## Agents
 
-Everything above applies to AI agents generating map pages, with one addition: the loop is `DeckMap.validate(html)` (is it well-formed? each error carries a `fix`), then `DeckMap.snapshotIR(html)` (what does it *mean*? diff against intent), then optionally `mountForTest` to verify interactions — all headless, all deterministic. See [`llms.txt`](../llms.txt).
+Everything above applies to AI agents generating map pages, with one addition: the loop is `OmMap.validate(html)` (is it well-formed? each error carries a `fix`), then `OmMap.snapshotIR(html)` (what does it *mean*? diff against intent), then optionally `mountForTest` to verify interactions — all headless, all deterministic. See [`llms.txt`](../llms.txt).

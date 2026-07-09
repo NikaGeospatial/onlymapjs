@@ -22,6 +22,8 @@
     <a href="basemap.html" class="current">Basemap</a>
     <a href="columnar.html">Columnar / GeoArrow</a>
     <a href="scenegraph.html">3D models</a>
+    <a href="google-3d-tiles.html">Google 3D Tiles</a>
+    <a href="google-3d-flyby.html">3D Flyby</a>
     <a href="ais.html">Live AIS</a>
     <a href="fleet.html">Fleet (polling)</a>
     <a href="story.html">Map story</a>
@@ -30,29 +32,29 @@
   <!-- "maplibre" (or a style URL) resolves to MapLibre's free demo style
        -- no account, no token. Try "none" (or removing the attribute
        entirely) to compare against the standalone, deck.gl-owns-view path. -->
-  <deck-map center="[-122.42, 37.77]" zoom="12" basemap="maplibre">
+  <om-map center="[-122.42, 37.77]" zoom="12" basemap="maplibre">
 
-    <deck-layer id="regions" type="GeoJsonLayer"
+    <om-layer id="regions" type="GeoJsonLayer"
                 data="./data/regions.geojson"
                 label="SF neighborhoods" color="#3388ff"
                 filled stroked pickable
                 get-line-color="[20,20,20]"
-                line-width-min-pixels="2"></deck-layer>
+                line-width-min-pixels="2"></om-layer>
 
-    <deck-layer id="bikes" type="ScatterplotLayer"
+    <om-layer id="bikes" type="ScatterplotLayer"
                 data="./data/bikes.json"
                 label="Bike racks (radius ~ size)" color="#e6550d"
                 get-position="[$lon, $lat]"
                 get-radius="scale($size, sqrt, [3, 30], domain=[0, 100])"
-                radius-units="pixels" pickable></deck-layer>
+                radius-units="pixels" pickable></om-layer>
 
-    <deck-widget type="legend" title="Layers" interactive position="top-right"></deck-widget>
-    <deck-widget type="zoom-controls" position="bottom-right"></deck-widget>
-    <deck-widget type="scale-bar" position="bottom-left"></deck-widget>
-    <deck-widget type="attribution" text="Basemap: MapLibre (no token)" position="bottom-left"
-                 style="margin-bottom: 28px;"></deck-widget>
+    <om-widget type="legend" title="Layers" interactive position="top-right"></om-widget>
+    <om-widget type="zoom-controls" position="bottom-right"></om-widget>
+    <om-widget type="scale-bar" position="bottom-left"></om-widget>
+    <om-widget type="attribution" text="Basemap: MapLibre (no token)" position="bottom-left"
+                 style="margin-bottom: 28px;"></om-widget>
 
-    <deck-widget position="top-left">
+    <om-widget position="top-left">
       <style>
         .panel { background: #fff; padding: 10px 14px; border-radius: 8px;
                  box-shadow: 0 2px 10px rgba(0,0,0,.15); font-size: 13px; }
@@ -62,9 +64,9 @@
         The camera is owned by the basemap now, not deck.gl —<br/>
         pan/zoom/scale-bar/picking all still work identically.
       </div>
-    </deck-widget>
+    </om-widget>
 
-  </deck-map>
+  </om-map>
 
 </body>
 </html>

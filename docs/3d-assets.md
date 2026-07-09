@@ -10,16 +10,16 @@ OnlyMapJS renders 3D models **in geographic context**: buildings, equipment, veh
 `ScenegraphLayer` instances a glTF/GLB model at each data row — the model loads and parses automatically (no loader wiring, no three.js, no scene setup):
 
 ```html
-<deck-map center="[-122.399, 37.79]" zoom="15.5" pitch="55" bearing="20" basemap="maplibre">
-  <deck-layer id="towers" type="ScenegraphLayer"
+<om-map center="[-122.399, 37.79]" zoom="15.5" pitch="55" bearing="20" basemap="maplibre">
+  <om-layer id="towers" type="ScenegraphLayer"
               scenegraph="./building.glb"
               data="./sites.json"
               get-position="[$lon, $lat]"
               get-orientation="[0, $heading, 90]"
               get-scale="[$width, $height, $depth]"
-              lighting="pbr" pickable></deck-layer>
-  <deck-behavior on="hover" layer="towers" action="show-tooltip" template="#site-tooltip"></deck-behavior>
-</deck-map>
+              lighting="pbr" pickable></om-layer>
+  <om-behavior on="hover" layer="towers" action="show-tooltip" template="#site-tooltip"></om-behavior>
+</om-map>
 ```
 
 Everything else composes as usual: picking works on models (the hover tooltip above), so do filters, widgets, behaviors, and the [testing story](testing.md).
@@ -54,7 +54,17 @@ Keep the conversion out of the browser: IFC parsing is heavy, and GLB is the int
 Hundreds of unique buildings or full city models shouldn't ship as one GLB. The OGC **3D Tiles** spec (streamed, LOD-managed) is the format to target — `Tile3DLayer` is bundled and consumes it directly:
 
 ```html
-<deck-layer id="city" type="Tile3DLayer" data="https://example.com/tileset.json"></deck-layer>
+<om-layer id="city" type="Tile3DLayer" tileset="https://example.com/tileset.json"></om-layer>
+```
+
+For LOD experiments, common loaders.gl tileset options have first-class attributes:
+
+```html
+<om-layer id="city" type="Tile3DLayer"
+            tileset="https://example.com/tileset.json"
+            maximum-screen-space-error="2"
+            maximum-memory-usage="256"
+            view-distance-scale="0.85"></om-layer>
 ```
 
 Upstream converters exist for IFC/CityGML → 3D Tiles (e.g. Cesium ion, `py3dtiles`, FME). Same rule: convert upstream, ingest the standard.

@@ -29,16 +29,18 @@
     <a href="basemap.html">Basemap</a>
     <a href="columnar.html">Columnar / GeoArrow</a>
     <a href="scenegraph.html" class="current">3D models</a>
+    <a href="google-3d-tiles.html">Google 3D Tiles</a>
+    <a href="google-3d-flyby.html">3D Flyby</a>
     <a href="ais.html">Live AIS</a>
     <a href="fleet.html">Fleet (polling)</a>
     <a href="story.html">Map story</a>
   </header>
 
-  <deck-map center="[-122.399, 37.79]" zoom="15.5" pitch="55" bearing="20" basemap="maplibre">
+  <om-map center="[-122.399, 37.79]" zoom="15.5" pitch="55" bearing="20" basemap="maplibre">
 
     <!-- glTF is Y-up: roll 90 (the third orientation component) stands the
          model upright on the map — the standard ScenegraphLayer idiom. -->
-    <deck-layer id="towers" type="ScenegraphLayer"
+    <om-layer id="towers" type="ScenegraphLayer"
                 scenegraph="./data/box.glb"
                 label="Towers (GLB instances)" color="#8ca6cc"
                 get-position="[$lon, $lat]"
@@ -54,15 +56,15 @@
           { "name": "Epsilon Spire","lon": -122.3975, "lat": 37.7912, "heading": 25, "width": 15, "depth": 15, "height": 150 }
         ]
       </script>
-    </deck-layer>
+    </om-layer>
 
-    <deck-widget type="legend" title="Layers" position="top-right"></deck-widget>
-    <deck-widget type="attribution" text="Model: generated box.glb (make-box-glb.mjs)" position="bottom-left"></deck-widget>
+    <om-widget type="legend" title="Layers" position="top-right"></om-widget>
+    <om-widget type="attribution" text="Model: generated box.glb (make-box-glb.mjs)" position="bottom-left"></om-widget>
 
-    <deck-behavior on="hover" layer="towers" action="show-tooltip"
-                   template="#tower-tooltip"></deck-behavior>
+    <om-behavior on="hover" layer="towers" action="show-tooltip"
+                   template="#tower-tooltip"></om-behavior>
 
-  </deck-map>
+  </om-map>
 
   <template id="tower-tooltip">
     <div style="background:#222; color:#fff; padding:4px 8px; border-radius:4px; font:12px system-ui, sans-serif;">

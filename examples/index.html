@@ -31,6 +31,8 @@
     <a href="columnar.html">Columnar / GeoArrow</a>
     <a href="draw.html">Draw</a>
     <a href="scenegraph.html">3D models</a>
+    <a href="google-3d-tiles.html">Google 3D Tiles</a>
+    <a href="google-3d-flyby.html">3D Flyby</a>
     <a href="ais.html">Live AIS</a>
     <a href="fleet.html">Fleet (polling)</a>
     <a href="story.html">Map story</a>
@@ -64,6 +66,14 @@
       <h3>3D models</h3>
       <p>GLB models instanced on the basemap via ScenegraphLayer — the browser half of an IFC/CAD asset pipeline, no three.js required.</p>
     </a>
+    <a class="card" href="google-3d-tiles.html">
+      <h3>Google 3D Tiles</h3>
+      <p>Google Photorealistic 3D Tiles rendered through Tile3DLayer. Requires a browser-restricted Map Tiles API key.</p>
+    </a>
+    <a class="card" href="google-3d-flyby.html">
+      <h3>3D Flyby</h3>
+      <p>A story-driven Google Photorealistic 3D Tiles flyby across nearby places, with dwell time to inspect tile loading and LOD refinement.</p>
+    </a>
     <a class="card" href="ais.html">
       <h3>Live AIS</h3>
       <p>A live WebSocket ship feed (simulated, aisstream.io format) — upsert-by-key, throttled flushes, widgets updating per flush.</p>
@@ -74,7 +84,7 @@
     </a>
     <a class="card" href="story.html">
       <h3>Map story</h3>
-      <p>A guided tour as a manifest: <code>deck-story</code> steps fire the same actions behaviors use, with a player widget, seek/scrub, and pause-on-grab.</p>
+      <p>A guided tour as a manifest: <code>om-story</code> steps fire the same actions behaviors use, with a player widget, seek/scrub, and pause-on-grab.</p>
     </a>
   </main>
 

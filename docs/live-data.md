@@ -14,9 +14,9 @@ Rule of thumb: delta/event feeds → WebSocket; materialized "where is everyone 
 ## WebSocket streams
 
 ```html
-<deck-layer id="ships" type="IconLayer"
+<om-layer id="ships" type="IconLayer"
             data="wss://stream.example/feed" source="ais" key="mmsi" flush="250ms"
-            get-position="[$lon, $lat]" get-angle="-$cog" ...></deck-layer>
+            get-position="[$lon, $lat]" get-angle="-$cog" ...></om-layer>
 ```
 
 - **`key`** declares entity identity: each message *moves* its entity rather than appending a new one. Without a key, an **array** message replaces the whole snapshot (full-snapshot feeds); keyless object messages are dropped with a warning.
@@ -29,8 +29,8 @@ Rule of thumb: delta/event feeds → WebSocket; materialized "where is everyone 
 The transport is generic; your domain format lives in a plugin:
 
 ```js
-import { DeckMap } from "onlymapjs";
-DeckMap.registerSource("ais", {
+import { OmMap } from "onlymapjs";
+OmMap.registerSource("ais", {
   // optional: sent on every (re)connect — subscription/auth handshakes
   onOpen: (send) => send(JSON.stringify({ APIKey: "...", BoundingBoxes: [...] })),
   // raw message (JSON-parsed when parseable) → entity object(s), or null to ignore
@@ -45,13 +45,13 @@ Register the plugin in the same module script that imports the library (registra
 ## Polling (`refresh`)
 
 ```html
-<deck-layer id="drivers" type="IconLayer"
+<om-layer id="drivers" type="IconLayer"
             data="/api/fleet.json" refresh="5s"
-            get-position="[$lon, $lat]" ...></deck-layer>
+            get-position="[$lon, $lat]" ...></om-layer>
 ```
 
 - Each poll **replaces the snapshot** — the endpoint's response is the new truth. If your endpoint returns deltas, you want the WebSocket path instead (validation warns if you combine `refresh` with a `wss:` URL).
-- **Failures don't blank the map**: a failing refresh keeps the last good snapshot and keeps polling, warning once per outage and once on recovery. The *initial* load settles `deck-map-ready` even on error.
+- **Failures don't blank the map**: a failing refresh keeps the last good snapshot and keeps polling, warning once per outage and once on recovery. The *initial* load settles `om-map-ready` even on error.
 - Interval floor is 250ms. Works for Arrow (`.arrow`) URLs too — re-fetched and re-parsed per poll.
 
 Runnable example: [`examples/fleet.html`](../examples/fleet.html) — 20 drivers polled at 1s from an **auth-protected** endpoint.
@@ -61,20 +61,20 @@ Runnable example: [`examples/fleet.html`](../examples/fleet.html) — 20 drivers
 Private APIs need credentials, and credentials must never appear in manifest markup (the manifest may be agent-generated, and attributes are visible DOM). Configure requests programmatically instead:
 
 ```js
-import { DeckMap } from "onlymapjs";
+import { OmMap } from "onlymapjs";
 
-DeckMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
+OmMap.configureData({ headers: { Authorization: `Bearer ${token}` } });
 // or per-URL:
-DeckMap.configureData({ headers: (url) => url.startsWith("/api/") ? { Authorization: `Bearer ${token}` } : undefined });
+OmMap.configureData({ headers: (url) => url.startsWith("/api/") ? { Authorization: `Bearer ${token}` } : undefined });
 // or take over entirely (signing, retries, proxies):
-DeckMap.configureData({ fetch: myFetch, credentials: "include" });
+OmMap.configureData({ fetch: myFetch, credentials: "include" });
 ```
 
 This applies to **every** Data Layer request: initial loads, polling refreshes, and Arrow files. WebSocket auth needs no equivalent — put the token in the URL or send it from the plugin's `onOpen`.
 
 ## How updates propagate (both transports)
 
-Every flush/poll takes the same path a resolved fetch takes: a **new data reference** enters the layer IR → the reconciler hands it to deck.gl, which re-uploads geometry without recompiling any accessor → `data:<layerId>` watch tokens fire, so widgets (stats panels, charts) re-render once per update. `deck-map-ready` resolves after the *first* load for polling; for streams it resolves immediately (a stream never "finishes" — don't wait for a first message to consider the map ready).
+Every flush/poll takes the same path a resolved fetch takes: a **new data reference** enters the layer IR → the reconciler hands it to deck.gl, which re-uploads geometry without recompiling any accessor → `data:<layerId>` watch tokens fire, so widgets (stats panels, charts) re-render once per update. `om-map-ready` resolves after the *first* load for polling; for streams it resolves immediately (a stream never "finishes" — don't wait for a first message to consider the map ready).
 
 Known limitation: sockets and poll loops are keyed by URL and live for the page — removing the layer stops the data being *read*, not the connection.
 

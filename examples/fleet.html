@@ -11,7 +11,7 @@
     resolved-fetch path (deck diffs `data`; accessors never recompile;
     the stats widget re-renders via the normal data:drivers watch token).
     Full-snapshot-replace semantics — delta feeds belong on wss (ais.html).
-  - DeckMap.configureData auth: /__fleet.json 401s without a bearer token
+  - OmMap.configureData auth: /__fleet.json 401s without a bearer token
     (see fleetSimulator in vite.config.ts). Credentials are configured
     programmatically, never as manifest attributes — secrets don't belong
     in markup, least of all agent-generated markup.
@@ -21,8 +21,8 @@
   <meta charset="utf-8" />
   <title>OnlyMapJS — Fleet polling example</title>
   <script type="module">
-    import { DeckMap } from "https://esm.sh/onlymapjs@0.1.0";
-    DeckMap.configureData({ headers: { Authorization: "Bearer demo-fleet-token" } });
+    import { OmMap } from "https://esm.sh/onlymapjs@0.1.0";
+    OmMap.configureData({ headers: { Authorization: "Bearer demo-fleet-token" } });
   </script>
   <link rel="stylesheet" href="nav.css" />
 </head>
@@ -37,14 +37,16 @@
     <a href="basemap.html">Basemap</a>
     <a href="columnar.html">Columnar / GeoArrow</a>
     <a href="scenegraph.html">3D models</a>
+    <a href="google-3d-tiles.html">Google 3D Tiles</a>
+    <a href="google-3d-flyby.html">3D Flyby</a>
     <a href="ais.html">Live AIS</a>
     <a href="fleet.html" class="current">Fleet (polling)</a>
     <a href="story.html">Map story</a>
   </header>
 
-  <deck-map center="[-122.41, 37.765]" zoom="13" basemap="maplibre">
+  <om-map center="[-122.41, 37.765]" zoom="13" basemap="maplibre">
 
-    <deck-layer id="drivers" type="IconLayer"
+    <om-layer id="drivers" type="IconLayer"
                 data="/__fleet.json" refresh="1s"
                 label="Drivers (polled snapshot)" color="#238b45"
                 icon-atlas="./data/ship.svg"
@@ -54,11 +56,11 @@
                 get-angle="-$heading"
                 get-color="scale($speed, sequential, ['#a1d99b', '#00441b'], domain=[0, 60])"
                 get-size="scale($speed, sqrt, [14, 26], domain=[0, 60])"
-                pickable></deck-layer>
+                pickable></om-layer>
 
-    <deck-widget type="legend" title="Layers" position="top-right"></deck-widget>
+    <om-widget type="legend" title="Layers" position="top-right"></om-widget>
 
-    <deck-widget position="top-left" watch="data:drivers">
+    <om-widget position="top-left" watch="data:drivers">
       <style>
         .panel { background: #fff; padding: 10px 14px; border-radius: 8px; font: 12px system-ui;
                  box-shadow: 0 2px 8px rgba(0,0,0,.15); }
@@ -70,7 +72,7 @@
         <div class="row"><span>Mean speed</span><b id="mean">—</b></div>
         <div class="row"><span>Fastest</span><b id="max">—</b></div>
       </div>
-      <script type="deck/widget">
+      <script type="om/widget">
         this.watch = ["data:drivers"];
         this.render = (ctx) => {
           const s = ctx.stats("drivers", "speed");
@@ -80,12 +82,12 @@
           this.$("#max").textContent = s.max.toFixed(0) + " km/h";
         };
       </script>
-    </deck-widget>
+    </om-widget>
 
-    <deck-behavior on="hover" layer="drivers" action="show-tooltip"
-                   template="#driver-tooltip"></deck-behavior>
+    <om-behavior on="hover" layer="drivers" action="show-tooltip"
+                   template="#driver-tooltip"></om-behavior>
 
-  </deck-map>
+  </om-map>
 
   <template id="driver-tooltip">
     <div style="background:#222; color:#fff; padding:4px 8px; border-radius:4px; font:12px system-ui, sans-serif;">

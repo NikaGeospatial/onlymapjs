@@ -22,10 +22,10 @@
        tolerates late registration — plugins resolve lazily — but this is
        the tidy order.) -->
   <script type="module">
-    import { DeckMap } from "https://esm.sh/onlymapjs@0.1.0";
+    import { OmMap } from "https://esm.sh/onlymapjs@0.1.0";
     // Domain decoding lives in a source plugin (spec: "Source plugins") —
     // the transport (WebSocket, reconnect, flush) is the library's.
-    DeckMap.registerSource("ais", {
+    OmMap.registerSource("ais", {
       // For the real aisstream.io service, subscribe here:
       // onOpen: (send) => send(JSON.stringify({ APIKey: "...", BoundingBoxes: [[[37.7, -122.6], [37.9, -122.3]]] })),
       decode: (raw) => {
@@ -49,12 +49,14 @@
     <a href="basemap.html">Basemap</a>
     <a href="columnar.html">Columnar / GeoArrow</a>
     <a href="scenegraph.html">3D models</a>
+    <a href="google-3d-tiles.html">Google 3D Tiles</a>
+    <a href="google-3d-flyby.html">3D Flyby</a>
     <a href="ais.html" class="current">Live AIS</a>
     <a href="fleet.html">Fleet (polling)</a>
     <a href="story.html">Map story</a>
   </header>
 
-  <deck-map center="[-122.42, 37.83]" zoom="12" basemap="maplibre">
+  <om-map center="[-122.42, 37.83]" zoom="12" basemap="maplibre">
 
     <!-- The spec's own example manifest, upgraded per its own note ("for
          oriented ship markers use IconLayer"): each vessel is a pointed
@@ -63,7 +65,7 @@
          north, so the angle is -$cog. mask:true lets get-color tint the
          white arrow by speed. `wss:/__ais` is host-relative — the runtime
          resolves host and scheme from the page. -->
-    <deck-layer id="ships" type="IconLayer"
+    <om-layer id="ships" type="IconLayer"
                 data="wss:/__ais" source="ais" key="mmsi" flush="250ms"
                 label="Ships (live AIS)" color="#08519c"
                 icon-atlas="./data/ship.svg"
@@ -73,12 +75,12 @@
                 get-angle="-$cog"
                 get-color="scale($sog, sequential, ['#9ecae1', '#08306b'], domain=[0, 25])"
                 get-size="scale($sog, sqrt, [16, 30], domain=[0, 25])"
-                pickable></deck-layer>
+                pickable></om-layer>
 
-    <deck-widget type="legend" title="Layers" position="top-right"></deck-widget>
+    <om-widget type="legend" title="Layers" position="top-right"></om-widget>
 
     <!-- Re-renders on every flush (data:ships) — live fleet stats. -->
-    <deck-widget position="top-left" watch="data:ships">
+    <om-widget position="top-left" watch="data:ships">
       <style>
         .panel { background: #fff; padding: 10px 14px; border-radius: 8px; font: 12px system-ui;
                  box-shadow: 0 2px 8px rgba(0,0,0,.15); }
@@ -90,7 +92,7 @@
         <div class="row"><span>Mean speed</span><b id="mean">—</b></div>
         <div class="row"><span>Fastest</span><b id="max">—</b></div>
       </div>
-      <script type="deck/widget">
+      <script type="om/widget">
         this.watch = ["data:ships"];
         this.render = (ctx) => {
           const s = ctx.stats("ships", "sog");
@@ -100,12 +102,12 @@
           this.$("#max").textContent = s.max.toFixed(1) + " kn";
         };
       </script>
-    </deck-widget>
+    </om-widget>
 
-    <deck-behavior on="hover" layer="ships" action="show-tooltip"
-                   template="#ship-tooltip"></deck-behavior>
+    <om-behavior on="hover" layer="ships" action="show-tooltip"
+                   template="#ship-tooltip"></om-behavior>
 
-  </deck-map>
+  </om-map>
 
   <template id="ship-tooltip">
     <div style="background:#222; color:#fff; padding:4px 8px; border-radius:4px; font:12px system-ui, sans-serif;">

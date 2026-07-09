@@ -5,15 +5,15 @@ description: Build, edit, debug, or review OnlyMapJS declarative HTML maps and d
 
 # OnlyMapJS
 
-Use OnlyMapJS as a declarative HTML map library. Write custom elements such as `<deck-map>`, `<deck-layer>`, `<deck-widget>`, `<deck-overlay>`, `<deck-behavior>`, `<deck-story>`, and `<deck-step>`. Do not write raw imperative deck.gl setup unless the user explicitly asks to integrate below the OnlyMapJS layer.
+Use OnlyMapJS as a declarative HTML map library. Write custom elements such as `<om-map>`, `<om-layer>`, `<om-widget>`, `<om-overlay>`, `<om-behavior>`, `<om-story>`, and `<om-step>`. Do not write raw imperative deck.gl setup unless the user explicitly asks to integrate below the OnlyMapJS layer.
 
 ## Core Workflow
 
 1. Start with valid HTML custom elements with explicit closing tags. Never self-close OnlyMapJS elements.
 2. Express deck.gl props as kebab-case attributes. Use `get-*` attributes for data-driven accessors.
 3. Use `$field` expressions for data access. Do not write `d.properties.x`, row-object loops, or column-index access in manifests.
-4. Add `validate` to `<deck-map>` while authoring.
-5. Verify with `DeckMap.validate(html)`, then `DeckMap.snapshotIR(html)`, and use `mountForTest` for interaction behavior when tests are requested.
+4. Add `validate` to `<om-map>` while authoring.
+5. Verify with `OmMap.validate(html)`, then `OmMap.snapshotIR(html)`, and use `mountForTest` for interaction behavior when tests are requested.
 6. Prefer public, package-safe imports:
 
 ```html
@@ -35,24 +35,24 @@ Load the smallest reference needed for the task:
 
 ## Non-Negotiable Syntax Rules
 
-- Always use explicit closing tags: `<deck-layer ...></deck-layer>`, not `<deck-layer ... />`.
-- Every `<deck-layer>` needs a stable `id`.
+- Always use explicit closing tags: `<om-layer ...></om-layer>`, not `<om-layer ... />`.
+- Every `<om-layer>` needs a stable `id`.
 - Attribute names are kebab-case: `get-fill-color`, `radius-units`, `line-width-min-pixels`.
 - Accessor values are expressions: `get-position="[$lon, $lat]"`.
 - `scale()` always needs an explicit `domain=`.
-- Inline handlers such as `onclick` are wrong. Use `data-emit`, `<deck-behavior>`, or widget scripts.
-- Full JavaScript accessor blocks require the `js` attribute on `<deck-layer>`.
-- Do not put secrets in markup. Use `DeckMap.configureData({ headers, credentials, fetch })`.
+- Inline handlers such as `onclick` are wrong. Use `data-emit`, `<om-behavior>`, or widget scripts.
+- Full JavaScript accessor blocks require the `js` attribute on `<om-layer>`.
+- Do not put secrets in markup. Use `OmMap.configureData({ headers, credentials, fetch })`.
 
 ## Authoring Decisions
 
-- UI panel, control, chart, legend, stats, filter, or draw toolbar -> `<deck-widget>`.
-- Sparse rich HTML at one geographic location -> `<deck-overlay>`.
-- Many labels/badges -> `<deck-layer type="PopupLayer">`.
-- Guided tour or narrative sequence -> `<deck-story>` with `<deck-step>` siblings that reference existing layers/overlays by id.
+- UI panel, control, chart, legend, stats, filter, or draw toolbar -> `<om-widget>`.
+- Sparse rich HTML at one geographic location -> `<om-overlay>`.
+- Many labels/badges -> `<om-layer type="PopupLayer">`.
+- Guided tour or narrative sequence -> `<om-story>` with `<om-step>` siblings that reference existing layers/overlays by id.
 - Live entity updates -> `wss://` stream with `key` and optional `source` decoder.
 - REST snapshot that changes over time -> `refresh="5s"`.
-- User sketching -> `data="draw:sketch"` layer plus `<deck-widget type="draw" target="sketch">`.
+- User sketching -> `data="draw:sketch"` layer plus `<om-widget type="draw" target="sketch">`.
 
 ## Output Expectations
 
