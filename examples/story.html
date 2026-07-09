@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!--
+  Map Stories example (spec: "Map Stories") — a guided tour as a manifest.
+  The scene (layers, overlays) is a complete, ordinary map; the <deck-story>
+  is a SIBLING that references it by id — delete the story and the map is
+  byte-for-byte the same map. Steps fire the same actions behaviors and
+  buttons fire; the player widget is replaceable chrome that emits
+  story-play/pause/seek.
+
+  The tour: (1) an empty basemap; (2) the chapter card + all three
+  neighbourhoods trace themselves on together; (3) a detail card over each
+  polygon showing its attributes; (4) a fly-through of each; (5) zoom back
+  out and populate the point layer in. Press ▶ (bottom-left) or scrub.
+-->
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>OnlyMapJS — Map Stories example</title>
+  <script type="module" src="https://esm.sh/onlymapjs@0.1.0"></script>
+  <link rel="stylesheet" href="nav.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <strong>OnlyMapJS examples</strong>
+    <a href="index.html">Overview</a>
+    <a href="widgets.html">Widgets</a>
+    <a href="behaviors-overlays.html">Behaviors &amp; overlays</a>
+    <a href="basemap.html">Basemap</a>
+    <a href="columnar.html">Columnar / GeoArrow</a>
+    <a href="scenegraph.html">3D models</a>
+    <a href="ais.html">Live AIS</a>
+    <a href="fleet.html">Fleet (polling)</a>
+    <a href="story.html" class="current">Map story</a>
+  </header>
+
+  <!-- First view frames all three polygons; the tour returns here at the end. -->
+  <deck-map center="[-122.45, 37.773]" zoom="11.3" basemap="maplibre">
+
+    <!-- The scene. regions starts HIDDEN so step 1 is an empty basemap;
+         the traces in step 2 draw each polygon on and reveal it. -->
+    <deck-layer id="regions" type="GeoJsonLayer"
+                data="./data/regions.geojson"
+                label="SF neighborhoods" color="#3388ff"
+                filled stroked pickable visible="false"
+                get-line-color="[20,20,20]"
+                line-width-min-pixels="2"></deck-layer>
+
+    <deck-layer id="bikes" type="ScatterplotLayer"
+                data="./data/bikes.json"
+                label="Bike racks" color="#e6550d" visible="false"
+                get-position="[$lon, $lat]"
+                get-radius="scale($size, sqrt, [3, 30], domain=[0, 100])"
+                radius-units="pixels" pickable></deck-layer>
+
+    <!-- The chapter card (step 2): describes the neighbourhoods as a set. -->
+    <deck-overlay id="chapter" anchor="[-122.45, 37.80]" visible="false" anchor-offset="bottom-center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; max-width: 240px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+        .card h3 { margin: 0 0 4px; font-size: 14px; }
+      </style>
+      <div class="card">
+        <h3>The neighborhoods</h3>
+        Three districts, drawn from plain GeoJSON. Watch each one trace itself on.
+      </div>
+    </deck-overlay>
+
+    <!-- Detail cards (step 3): one per polygon, anchored to the feature's
+         own geometry by id — no coordinates in the markup — showing ALL of
+         that feature's attributes via {{field}} interpolation. -->
+    <deck-overlay id="detail-north-beach" anchor-layer="regions" anchor-feature-id="north-beach" visible="false" anchor-offset="center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; min-width: 190px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+        .card h3 { margin: 0 0 6px; font-size: 14px; }
+        .card .row { display: flex; justify-content: space-between; gap: 16px; margin-top: 2px; }
+        .card .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+      </style>
+      <div class="card">
+        <h3>{{name}}</h3>
+        <div class="row"><span>Population</span><span>{{population}}</span></div>
+        <div class="row"><span>Area</span><span>{{area_km2}} km²</span></div>
+        <div class="row"><span>Founded</span><span>{{founded}}</span></div>
+      </div>
+    </deck-overlay>
+    <deck-overlay id="detail-mission" anchor-layer="regions" anchor-feature-id="mission" visible="false" anchor-offset="center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; min-width: 190px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+        .card h3 { margin: 0 0 6px; font-size: 14px; }
+        .card .row { display: flex; justify-content: space-between; gap: 16px; margin-top: 2px; }
+        .card .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+      </style>
+      <div class="card">
+        <h3>{{name}}</h3>
+        <div class="row"><span>Population</span><span>{{population}}</span></div>
+        <div class="row"><span>Area</span><span>{{area_km2}} km²</span></div>
+        <div class="row"><span>Founded</span><span>{{founded}}</span></div>
+      </div>
+    </deck-overlay>
+    <deck-overlay id="detail-sunset" anchor-layer="regions" anchor-feature-id="sunset" visible="false" anchor-offset="center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; min-width: 190px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+        .card h3 { margin: 0 0 6px; font-size: 14px; }
+        .card .row { display: flex; justify-content: space-between; gap: 16px; margin-top: 2px; }
+        .card .row span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; }
+      </style>
+      <div class="card">
+        <h3>{{name}}</h3>
+        <div class="row"><span>Population</span><span>{{population}}</span></div>
+        <div class="row"><span>Area</span><span>{{area_km2}} km²</span></div>
+        <div class="row"><span>Founded</span><span>{{founded}}</span></div>
+      </div>
+    </deck-overlay>
+
+    <!-- Points card (step 5): shown while the bike layer populates in. -->
+    <deck-overlay id="points-card" anchor="[-122.45, 37.80]" visible="false" anchor-offset="bottom-center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; max-width: 250px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+        .card h3 { margin: 0 0 4px; font-size: 14px; }
+      </style>
+      <div class="card">
+        <h3>Point layers too</h3>
+        Point layers can also be “populated in” — each rack drops onto the map one by one.
+      </div>
+    </deck-overlay>
+
+    <!-- The tour: time → action, same contract as behaviors/buttons. -->
+    <deck-story id="tour" interrupt="pause">
+      <!-- Step 2: chapter card + all three polygons trace on together. The
+           regions layer turns visible in the same beat; each feature stays
+           hidden until its own trace reveals it, so nothing flashes. -->
+      <deck-step action="toggle-layer" layer="regions" visible="true"></deck-step>
+      <deck-step duration="3s" trace layer="regions" feature-id="north-beach" parallel></deck-step>
+      <deck-step duration="3s" trace layer="regions" feature-id="mission" parallel></deck-step>
+      <deck-step duration="3s" trace layer="regions" feature-id="sunset" parallel></deck-step>
+      <deck-step duration="3s" action="show-overlay" target="chapter" parallel></deck-step>
+
+      <!-- Step 3: dismiss the chapter card, reveal a detail card over each
+           polygon (attributes interpolated from each feature). -->
+      <deck-step duration="1s" action="hide-overlay" target="chapter"></deck-step>
+      <deck-step action="show-overlay" target="detail-north-beach"></deck-step>
+      <deck-step action="show-overlay" target="detail-mission" parallel></deck-step>
+      <deck-step action="show-overlay" target="detail-sunset" parallel></deck-step>
+
+      <!-- Step 4: fly to each polygon in turn (its detail card tracks; the
+           other two cull off-screen automatically). -->
+      <deck-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="north-beach" curve></deck-step>
+      <deck-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="mission" curve></deck-step>
+      <deck-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="sunset" curve></deck-step>
+
+      <!-- Step 5: hide the detail cards, zoom back to the first view, then
+           populate the point layer in behind the points card. -->
+      <deck-step action="hide-overlay" target="detail-north-beach"></deck-step>
+      <deck-step action="hide-overlay" target="detail-mission" parallel></deck-step>
+      <deck-step action="hide-overlay" target="detail-sunset" parallel></deck-step>
+      <deck-step duration="3s" action="fly-to" center="[-122.45, 37.773]" zoom="11.3" curve parallel></deck-step>
+      <deck-step action="toggle-layer" layer="bikes" visible="true"></deck-step>
+      <deck-step duration="3s" populate layer="bikes" parallel></deck-step>
+      <deck-step duration="3s" action="show-overlay" target="points-card" parallel></deck-step>
+    </deck-story>
+
+    <deck-widget type="player" story="tour" position="bottom-left"></deck-widget>
+    <deck-widget type="legend" title="Layers" position="top-right"></deck-widget>
+
+  </deck-map>
+
+</body>
+</html>

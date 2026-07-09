@@ -1,0 +1,149 @@
+# OnlyMapJS
+
+**Interactive WebGL maps from plain HTML.** Write a declarative manifest — layers, widgets, popups, behaviors as custom elements — and OnlyMapJS drives [deck.gl](https://deck.gl) underneath: rendering, data loading, live updates, picking, and UI, with no build step and no imperative glue code.
+
+```html
+<script type="module" src="onlymapjs"></script>
+
+<deck-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre">
+  <deck-layer id="quakes" type="ScatterplotLayer" data="./quakes.json"
+              label="Earthquakes" color="#b30000"
+              get-position="[$lon, $lat]"
+              get-fill-color="scale($magnitude, sequential, ['#fee8c8','#b30000'], domain=[0,7])"
+              get-radius="scale($magnitude, sqrt, [2, 18], domain=[0,7])"
+              radius-units="pixels" pickable></deck-layer>
+
+  <deck-widget type="legend" position="top-right"></deck-widget>
+
+  <deck-overlay id="detail" anchor-from="selection" visible="false">
+    <div><b>{{place}}</b> — M {{magnitude}}</div>
+  </deck-overlay>
+  <deck-behavior on="click" layer="quakes" action="show-overlay" target="detail"></deck-behavior>
+</deck-map>
+```
+
+That's a complete app: a no-token MapLibre basemap, data-driven colors and sizes, a legend, and a click-for-details popup. Edit any attribute on the live DOM and the map updates — the manifest *is* the state.
+
+It's also designed to be written **by AI agents**: HTML is a reliable generation target, [`llms.txt`](llms.txt) teaches the format, and `DeckMap.validate()` returns structured errors with actionable fixes — a real feedback loop instead of a blank canvas.
+
+> ⚠️ **Status: v0.1, pre-release.** Not yet published to npm and no license granted yet — run it from this repository (below). APIs may still move.
+
+## Running it today
+
+```bash
+git clone <this repo> && cd onlymap
+npm install
+npm run dev        # opens examples/ — nine commented example pages (the AIS + fleet demos need a live backend)
+npm test           # 212 unit/behavioral tests
+npm run test:e2e   # 11 Playwright tests (real GPU rendering & picking)
+```
+
+The [examples](examples/index.html) are the best tour: widgets, behaviors & overlays, basemaps, columnar/Arrow data, 3D models, a live WebSocket ship feed, and a polled driver fleet.
+
+## The manifest
+
+Five elements, one rule: **attributes are kebab-case versions of deck.gl props** (`radius-units` → `radiusUnits`), and `get-*` attributes are data-driven accessors.
+
+| Element | Role |
+|---|---|
+| `<deck-map>` | The map. `center`, `zoom`, `pitch`, `bearing`; `basemap="maplibre"` (default style or any style URL — no token) or `"none"` (standalone canvas); `validate` for a live on-page error panel. |
+| `<deck-layer>` | Any of **33 layer types** by name — all of deck.gl's core, geo, aggregation, and mesh layers (Scatterplot, GeoJson, Arc, Path, Heatmap, Hexagon, Trips, Tile, Tile3D, Scenegraph, …) plus the built-in `PopupLayer` for WebGL badges/labels at scale. `id` required; `label`/`color` feed the legend. |
+| `<deck-widget>` | UI panels. Built-ins: `legend`, `layer-switcher`, `zoom-controls`, `scale-bar`, `attribution`, `filter`, `vega-lite` (live charts). Or write your own inline with HTML + a `<script type="deck/widget">`. |
+| `<deck-overlay>` | Rich HTML anchored to a map location — a static `anchor="[lng, lat]"`, the current selection, or a feature's own geometry via `anchor-layer`/`anchor-feature-id`. `{{field}}` interpolates the picked feature, HTML-escaped by default. |
+| `<deck-behavior>` | Declarative interactions: `on="click|hover|drag|load|data-loaded"` → a named action. |
+| `<deck-story>` | A storyboard: `<deck-step>` children fire actions on a timeline. Controlled by the `player` widget, behaviors, or `storyEl.play()/pause()/seek()`. |
+
+### Accessors without JavaScript
+
+`get-*` attributes take a small, safe expression language — `$field` reads a datum field regardless of data shape (flat JSON, GeoJSON properties, or Arrow columns):
+
+```html
+get-position="[$lon, $lat]"
+get-radius="$population * 0.001"
+get-fill-color="$value > 100 ? [255,0,0] : [0,128,255]"
+get-fill-color="scale($depth, sequential, ['#ffffcc','#800026'], domain=[0,700])"
+```
+
+Built-ins: `scale()` (types: `sequential`, `diverging`, `threshold`, `sqrt`, `log`, `pow` — explicit `domain=` required), `colorRamp()`, `clamp()`, `lerp()`, and `Math.*`. Multi-line accessors go in a `<script type="deck/accessors">` block; genuinely arbitrary JS needs an explicit `js` opt-in on the layer. Untrusted (agent-written) expressions are safe by construction: the compiler is an AST whitelist, not an eval.
+
+### Data sources
+
+| Source | Manifest | Notes |
+|---|---|---|
+| JSON / GeoJSON URL | `data="./points.json"` | flat arrays or FeatureCollections; `$field` works on both |
+| Inline JSON | `<script type="application/json">` child | zero-request demos and tests |
+| **Apache Arrow / GeoArrow** | `data="./big.arrow"` | points stay columnar (zero row objects on the render path); GeoArrow line/polygon geometry becomes GeoJSON features — trace, anchored cards, picking all work; zstd-compressed IPC supported; parsers lazy-load on first use |
+| Columnar JSON | `{"columns": {"lon": [...], ...}}` | same columnar fast path without Arrow tooling |
+| **CSV / TSV** | `data="./quakes.csv"` | parsed to typed columns (lazy ~48 KB chunk); numbers auto-typed, quoted fields intact |
+| **Shapefile** | `data="./countries.shp"` | geometry + `.dbf` attributes joined into GeoJSON features (sidecars fetched with your auth config) |
+| **KML** | `data="./tour.kml"` | placemarks → GeoJSON features; other formats plug in via `DeckMap.registerFormat` |
+| **WebSocket stream** | `data="wss://feed" key="id" flush="250ms" source="myFormat"` | upsert-by-key, burst coalescing, auto-reconnect; decode any format via `DeckMap.registerSource` |
+| **Polled REST snapshot** | `data="/api/fleet.json" refresh="5s"` | full-snapshot replace per poll; outages keep the last good data |
+
+Private endpoints: `DeckMap.configureData({ headers, credentials, fetch })` — applied to every fetch including refreshes. Credentials stay out of markup by design. Full guide: [docs/live-data.md](docs/live-data.md).
+
+### Interaction
+
+Ten built-in actions wire to picks, widget buttons (`data-emit`), or script (`ctx.emit`) with one shared payload contract: `show-overlay`, `hide-overlay`, `show-tooltip`, `hide-tooltip`, `toggle-layer`, `highlight-feature`, `zoom-to-feature`, `filter-layer`, `zoom-in`, `zoom-out` — plus `DeckMap.registerAction` for your own.
+
+**Animation:** camera moves accept a duration — `map.flyTo(coords, zoom, { duration: 1200, curve: true })`, or the `fly-to` action (`center`/`zoom`/`pitch`/`bearing`/`duration`) from any behavior or button; `prefers-reduced-motion` is honored (moves become instant, final state identical). Per-prop GPU transitions via the `transition` attribute: `transition="get-fill-color 800ms"` fades color changes; on a streaming layer, `transition="get-position 300ms"` makes entities glide between updates.
+
+**Map stories:** a guided tour as markup — `<deck-story>` holds `<deck-step>` children that fire the same actions behaviors use, on a timeline (`duration`, `delay`, `parallel`); the built-in `type="player"` widget gives play/pause/scrub, seeking restores the scene's captured initial state, one story is active per map, and grabbing the map pauses playback. Effect verbs — `fade`, `pulse`, `trace` (progressive TripsLayer draw-on; with `feature-id`, a single polygon draws itself on inside its own layer), and `populate` (rows drop in one by one via a GPU filter sweep) — work as step shorthands or plain actions. The story is a sibling that references layers by id — delete it and the map is unchanged. Guide: [docs/stories.md](docs/stories.md).
+
+GPU filtering is declarative — `filter-field="magnitude" filter-range="[4,10]"` — updates live from the built-in `filter` slider widget, and widget statistics stay coherent with what the map shows (`ctx.stats` respects the active filter unless you opt out).
+
+### Widgets get a real runtime API
+
+Custom widget scripts receive `ctx`: layer metadata, `viewport` (bounds/zoom/project), the current `selection`, `emit()`, and data access — `ctx.data(id)`, `ctx.dataInViewport(id)`, `ctx.stats(id, field)` (count/min/max/mean/stddev/percentiles/histogram, viewport-scoped on request). Declare `watch` tokens (`data:quakes viewport selection layers`) and the runtime re-renders you only when relevant state changes. `vegaEmbed` and `d3` are available as globals for charts.
+
+## Editor IntelliSense
+
+`onlymapjs.html-data.json` (generated from the layer registry — `npm run gen:html-data`) gives autocomplete and hover docs for every `deck-*` element and attribute in VS Code and any editor speaking the [html-customData](https://github.com/microsoft/vscode-custom-data) format:
+
+```jsonc
+// .vscode/settings.json
+{ "html.customData": ["./node_modules/onlymapjs/onlymapjs.html-data.json"] }
+```
+
+## Validation — the feedback loop
+
+```js
+const result = DeckMap.validate(manifestHtml);
+// { valid, errors: [{ severity, element, attribute, message, fix }], warnings: [...] }
+```
+
+Exhaustive (every problem in one pass) and prescriptive (each entry carries a `fix` instruction). The same pass runs live via the `validate` attribute, rendering an on-page error panel with click-to-locate. Runtime errors (crashing accessors, bad props) are formatted into the same shape. Attributes for not-yet-implemented features warn instead of failing silently.
+
+## Testing your map pages
+
+Uniquely for a WebGL map library, pages built with OnlyMapJS are testable in plain vitest/jest — no browser, no GPU:
+
+```js
+const h = await mountForTest(myPageHtml);            // headless: real projection math, no WebGL
+await h.pick({ layer: "quakes", featureId: "q1" }); // same code path as a real click
+expect(overlay.shadowRoot.textContent).toContain("M 6.5");
+```
+
+Plus `DeckMap.snapshotIR(html)` to lock down what a manifest *means* in a snapshot test, and `await mapEl.ready` / the `deck-map-ready` event to de-flake browser e2e tests. Full guide: [docs/testing.md](docs/testing.md).
+
+## 3D
+
+`ScenegraphLayer` instances glTF/GLB models at coordinates (no three.js, no loader wiring), `Tile3DLayer` consumes OGC 3D Tiles, and the camera tilts via `pitch`/`bearing` attributes. Converting IFC/CAD upstream: [docs/3d-assets.md](docs/3d-assets.md).
+
+## Programmatic surface
+
+- **`DeckMap.*`** — `validate`, `snapshotIR`, `registerLayer`, `registerWidget`, `registerAction`, `registerSource`, `configureData`, `getLayerSchema`
+- **On a `<deck-map>` element** — `ready` (promise), `flyTo(coords, zoom?)`, `setLayerVisible(id, bool)`, `getLayers()`, `emit(action, payload)`; `document.querySelector("deck-map")` is fully typed
+- **Testing** — `mountForTest`, and imports are SSR-safe (importing in Node/jsdom never touches browser globals)
+
+## Not implemented yet (honestly)
+
+Mapbox GL basemaps, depth-interleaved 3D compositing, globe projection, SSE transport, multi-field filters, `dblclick` behaviors, the `transform` data pipeline, the React adapter / typed builder, and editor autocomplete tooling. The full design-vs-built ledger lives in the Implementation Status table.
+
+## Going deeper
+
+| | |
+|---|---|
+| [docs/testing.md](docs/testing.md) · [docs/live-data.md](docs/live-data.md) · [docs/3d-assets.md](docs/3d-assets.md) · [docs/stories.md](docs/stories.md) | Consumer guides |
+| [llms.txt](llms.txt) | The agent-facing quick reference |
+| [examples/](examples/index.html) | Nine example pages — seven run standalone; AIS + fleet need a live backend |

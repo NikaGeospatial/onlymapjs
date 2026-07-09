@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+  Hand-authoring sandbox — workspace snippets (type prefix, then Tab):
+    !starter   full page: map + layer + overlay + legend
+    !page !map !layer !geojson !overlay !legend !behavior !inline-data
+  Tag/attribute autocomplete: onlymapjs.html-data.json (html.customData in .vscode).
+-->
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Handwritten</title>
+  <script type="module" src="https://esm.sh/onlymapjs@0.1.0"></script>
+  <link rel="stylesheet" href="nav.css" />
+</head>
+<body>
+
+  <deck-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre" validate>
+
+    <deck-layer id="points" type="ScatterplotLayer"
+                data="./data/bikes.json"
+                label="Bike racks" color="#e63946"
+                get-position="[$lon, $lat]"
+                pickable></deck-layer>
+
+    <deck-overlay id="points-detail" anchor-from="selection" visible="false">
+      <div class="popup"><strong>{{name}}</strong></div>
+    </deck-overlay>
+    <deck-behavior on="click" layer="points" action="show-overlay"
+                   target="points-detail"></deck-behavior>
+
+    <deck-widget type="legend" title="Layers" position="top-right"></deck-widget>
+
+  </deck-map>
+
+</body>
+</html>

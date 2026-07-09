@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--
+  Basemap example (spec: "Basemap Adapter & View-State Sync"). basemap
+  attribute switches the map to MapLibre-owns-the-camera mode via
+  @deck.gl/mapbox's MapboxOverlay -- no token required. Everything else
+  (layers, widgets, ctx.viewport) works exactly the same as standalone.
+-->
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>OnlyMapJS — Basemap example</title>
+  <script type="module" src="https://esm.sh/onlymapjs@0.1.0"></script>
+  <link rel="stylesheet" href="nav.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <strong>OnlyMapJS examples</strong>
+    <a href="index.html">Overview</a>
+    <a href="widgets.html">Widgets</a>
+    <a href="behaviors-overlays.html">Behaviors &amp; overlays</a>
+    <a href="basemap.html" class="current">Basemap</a>
+    <a href="columnar.html">Columnar / GeoArrow</a>
+    <a href="scenegraph.html">3D models</a>
+    <a href="ais.html">Live AIS</a>
+    <a href="fleet.html">Fleet (polling)</a>
+    <a href="story.html">Map story</a>
+  </header>
+
+  <!-- "maplibre" (or a style URL) resolves to MapLibre's free demo style
+       -- no account, no token. Try "none" (or removing the attribute
+       entirely) to compare against the standalone, deck.gl-owns-view path. -->
+  <deck-map center="[-122.42, 37.77]" zoom="12" basemap="maplibre">
+
+    <deck-layer id="regions" type="GeoJsonLayer"
+                data="./data/regions.geojson"
+                label="SF neighborhoods" color="#3388ff"
+                filled stroked pickable
+                get-line-color="[20,20,20]"
+                line-width-min-pixels="2"></deck-layer>
+
+    <deck-layer id="bikes" type="ScatterplotLayer"
+                data="./data/bikes.json"
+                label="Bike racks (radius ~ size)" color="#e6550d"
+                get-position="[$lon, $lat]"
+                get-radius="scale($size, sqrt, [3, 30], domain=[0, 100])"
+                radius-units="pixels" pickable></deck-layer>
+
+    <deck-widget type="legend" title="Layers" interactive position="top-right"></deck-widget>
+    <deck-widget type="zoom-controls" position="bottom-right"></deck-widget>
+    <deck-widget type="scale-bar" position="bottom-left"></deck-widget>
+    <deck-widget type="attribution" text="Basemap: MapLibre (no token)" position="bottom-left"
+                 style="margin-bottom: 28px;"></deck-widget>
+
+    <deck-widget position="top-left">
+      <style>
+        .panel { background: #fff; padding: 10px 14px; border-radius: 8px;
+                 box-shadow: 0 2px 10px rgba(0,0,0,.15); font-size: 13px; }
+      </style>
+      <div class="panel">
+        <strong>Basemap: MapLibre</strong><br/>
+        The camera is owned by the basemap now, not deck.gl —<br/>
+        pan/zoom/scale-bar/picking all still work identically.
+      </div>
+    </deck-widget>
+
+  </deck-map>
+
+</body>
+</html>

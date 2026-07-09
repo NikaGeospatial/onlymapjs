@@ -1,0 +1,1594 @@
+{
+  "version": 1.1,
+  "tags": [
+    {
+      "name": "deck-map",
+      "description": "The map root. Layers, overlays, behaviors, widgets, and stories are children.",
+      "attributes": [
+        {
+          "name": "center",
+          "description": "Initial center \"[lng, lat]\"."
+        },
+        {
+          "name": "zoom",
+          "description": "Initial zoom."
+        },
+        {
+          "name": "pitch",
+          "description": "Initial pitch in degrees."
+        },
+        {
+          "name": "bearing",
+          "description": "Initial bearing in degrees."
+        },
+        {
+          "name": "basemap",
+          "description": "Basemap renderer.",
+          "values": [
+            {
+              "name": "maplibre"
+            }
+          ]
+        },
+        {
+          "name": "validate",
+          "description": "Run manifest validation and show the on-page error panel."
+        },
+        {
+          "name": "headless",
+          "description": "No renderer — parsing/IR only (tests, SSR)."
+        },
+        {
+          "name": "width",
+          "description": "Headless viewport width (px)."
+        },
+        {
+          "name": "height",
+          "description": "Headless viewport height (px)."
+        }
+      ],
+      "references": [
+        {
+          "name": "README",
+          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/../README.md"
+        }
+      ]
+    },
+    {
+      "name": "deck-layer",
+      "description": "A deck.gl layer declared as markup — attributes map to props (kebab-case), get-* attributes compile as accessors.",
+      "attributes": [
+        {
+          "name": "id",
+          "description": "Layer id — referenced by behaviors, steps, widgets, and overlay anchors."
+        },
+        {
+          "name": "type",
+          "description": "deck.gl layer class.",
+          "values": [
+            {
+              "name": "A5Layer"
+            },
+            {
+              "name": "ArcLayer"
+            },
+            {
+              "name": "BitmapLayer"
+            },
+            {
+              "name": "ColumnLayer"
+            },
+            {
+              "name": "ContourLayer"
+            },
+            {
+              "name": "GeoJsonLayer"
+            },
+            {
+              "name": "GeohashLayer"
+            },
+            {
+              "name": "GreatCircleLayer"
+            },
+            {
+              "name": "GridCellLayer"
+            },
+            {
+              "name": "GridLayer"
+            },
+            {
+              "name": "H3ClusterLayer"
+            },
+            {
+              "name": "H3HexagonLayer"
+            },
+            {
+              "name": "HeatmapLayer"
+            },
+            {
+              "name": "HexagonLayer"
+            },
+            {
+              "name": "IconLayer"
+            },
+            {
+              "name": "LineLayer"
+            },
+            {
+              "name": "MVTLayer"
+            },
+            {
+              "name": "PathLayer"
+            },
+            {
+              "name": "PointCloudLayer"
+            },
+            {
+              "name": "PolygonLayer"
+            },
+            {
+              "name": "PopupLayer"
+            },
+            {
+              "name": "QuadkeyLayer"
+            },
+            {
+              "name": "S2Layer"
+            },
+            {
+              "name": "ScatterplotLayer"
+            },
+            {
+              "name": "ScenegraphLayer"
+            },
+            {
+              "name": "ScreenGridLayer"
+            },
+            {
+              "name": "SimpleMeshLayer"
+            },
+            {
+              "name": "SolidPolygonLayer"
+            },
+            {
+              "name": "TerrainLayer"
+            },
+            {
+              "name": "TextLayer"
+            },
+            {
+              "name": "Tile3DLayer"
+            },
+            {
+              "name": "TileLayer"
+            },
+            {
+              "name": "TripsLayer"
+            }
+          ]
+        },
+        {
+          "name": "data",
+          "description": "Data URL (JSON, GeoJSON, CSV/TSV, Arrow/GeoArrow IPC, Shapefile .shp, KML) or wss:// stream; omit for inline <script type=\"application/json\">."
+        },
+        {
+          "name": "label",
+          "description": "Human-readable name shown in the legend and layer list."
+        },
+        {
+          "name": "color",
+          "description": "Shorthand fill color (hex or CSS color) — also the legend swatch."
+        },
+        {
+          "name": "visible",
+          "description": "Layer visibility.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "opacity",
+          "description": "Layer opacity 0–1."
+        },
+        {
+          "name": "pickable",
+          "description": "Enables hover/click picking for behaviors and tooltips."
+        },
+        {
+          "name": "transition",
+          "description": "GPU prop transitions, e.g. \"get-fill-color 800ms, get-radius 400ms\"."
+        },
+        {
+          "name": "filter-field",
+          "description": "GPU filter field (DataFilterExtension) — pair with filter-range."
+        },
+        {
+          "name": "filter-range",
+          "description": "Filter range \"[min, max]\" for filter-field."
+        },
+        {
+          "name": "filter-soft-range",
+          "description": "Soft edges \"[min, max]\" for the filter."
+        },
+        {
+          "name": "filter-category",
+          "description": "Categorical GPU filter field — pair with filter-categories."
+        },
+        {
+          "name": "filter-categories",
+          "description": "JSON array of categories to keep."
+        },
+        {
+          "name": "highlighted-id",
+          "description": "Feature id to highlight (set by the highlight-feature action)."
+        },
+        {
+          "name": "key",
+          "description": "Stream entity identity field — messages upsert by this key (wss data)."
+        },
+        {
+          "name": "flush",
+          "description": "Stream burst coalescing interval (default 250ms)."
+        },
+        {
+          "name": "refresh",
+          "description": "Polling interval for REST snapshots, e.g. \"5s\" — each poll replaces the data."
+        },
+        {
+          "name": "source",
+          "description": "registerSource decoder plugin name for stream messages."
+        },
+        {
+          "name": "get-position",
+          "description": "Accessor for deck.gl getPosition — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-fill-color",
+          "description": "Accessor for deck.gl getFillColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-line-color",
+          "description": "Accessor for deck.gl getLineColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-radius",
+          "description": "Accessor for deck.gl getRadius — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "radius",
+          "description": "deck.gl undefined."
+        },
+        {
+          "name": "radius-units",
+          "description": "deck.gl radiusUnits."
+        },
+        {
+          "name": "radius-min-pixels",
+          "description": "deck.gl radiusMinPixels."
+        },
+        {
+          "name": "line-width-min-pixels",
+          "description": "deck.gl lineWidthMinPixels."
+        },
+        {
+          "name": "stroked",
+          "description": "deck.gl stroked."
+        },
+        {
+          "name": "filled",
+          "description": "deck.gl filled."
+        },
+        {
+          "name": "get-line-width",
+          "description": "Accessor for deck.gl getLineWidth — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text",
+          "description": "Accessor for deck.gl getText — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-subtext",
+          "description": "Accessor for deck.gl getSubtext — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-color",
+          "description": "Accessor for deck.gl getColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-size",
+          "description": "Accessor for deck.gl getSize — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon",
+          "description": "Accessor for deck.gl getIcon — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "layout",
+          "description": "deck.gl layout."
+        },
+        {
+          "name": "min-zoom",
+          "description": "deck.gl minZoom."
+        },
+        {
+          "name": "max-zoom",
+          "description": "deck.gl maxZoom."
+        },
+        {
+          "name": "scenegraph",
+          "description": "deck.gl scenegraph."
+        },
+        {
+          "name": "get-orientation",
+          "description": "Accessor for deck.gl getOrientation — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-scale",
+          "description": "Accessor for deck.gl getScale — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-translation",
+          "description": "Accessor for deck.gl getTranslation — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "size-scale",
+          "description": "deck.gl sizeScale."
+        },
+        {
+          "name": "size-min-pixels",
+          "description": "deck.gl sizeMinPixels."
+        },
+        {
+          "name": "size-max-pixels",
+          "description": "deck.gl sizeMaxPixels."
+        },
+        {
+          "name": "lighting",
+          "description": "deck.gl _lighting."
+        },
+        {
+          "name": "operation",
+          "description": "deck.gl operation."
+        },
+        {
+          "name": "coordinate-system",
+          "description": "deck.gl coordinateSystem."
+        },
+        {
+          "name": "coordinate-origin",
+          "description": "deck.gl coordinateOrigin."
+        },
+        {
+          "name": "model-matrix",
+          "description": "deck.gl modelMatrix."
+        },
+        {
+          "name": "wrap-longitude",
+          "description": "deck.gl wrapLongitude."
+        },
+        {
+          "name": "position-format",
+          "description": "deck.gl positionFormat."
+        },
+        {
+          "name": "color-format",
+          "description": "deck.gl colorFormat."
+        },
+        {
+          "name": "parameters",
+          "description": "deck.gl parameters."
+        },
+        {
+          "name": "load-options",
+          "description": "deck.gl loadOptions."
+        },
+        {
+          "name": "transitions",
+          "description": "deck.gl transitions."
+        },
+        {
+          "name": "extensions",
+          "description": "deck.gl extensions."
+        },
+        {
+          "name": "loaders",
+          "description": "deck.gl loaders."
+        },
+        {
+          "name": "highlighted-object-index",
+          "description": "deck.gl highlightedObjectIndex."
+        },
+        {
+          "name": "auto-highlight",
+          "description": "deck.gl autoHighlight."
+        },
+        {
+          "name": "highlight-color",
+          "description": "Accessor for deck.gl highlightColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-source-position",
+          "description": "Accessor for deck.gl getSourcePosition — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-target-position",
+          "description": "Accessor for deck.gl getTargetPosition — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-source-color",
+          "description": "Accessor for deck.gl getSourceColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-target-color",
+          "description": "Accessor for deck.gl getTargetColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-width",
+          "description": "Accessor for deck.gl getWidth — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-height",
+          "description": "Accessor for deck.gl getHeight — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-tilt",
+          "description": "Accessor for deck.gl getTilt — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "great-circle",
+          "description": "deck.gl greatCircle."
+        },
+        {
+          "name": "num-segments",
+          "description": "deck.gl numSegments."
+        },
+        {
+          "name": "width-units",
+          "description": "deck.gl widthUnits."
+        },
+        {
+          "name": "width-scale",
+          "description": "deck.gl widthScale."
+        },
+        {
+          "name": "width-min-pixels",
+          "description": "deck.gl widthMinPixels."
+        },
+        {
+          "name": "width-max-pixels",
+          "description": "deck.gl widthMaxPixels."
+        },
+        {
+          "name": "image",
+          "description": "deck.gl image."
+        },
+        {
+          "name": "bounds",
+          "description": "deck.gl bounds."
+        },
+        {
+          "name": "_image-coordinate-system",
+          "description": "deck.gl _imageCoordinateSystem."
+        },
+        {
+          "name": "desaturate",
+          "description": "deck.gl desaturate."
+        },
+        {
+          "name": "transparent-color",
+          "description": "deck.gl transparentColor."
+        },
+        {
+          "name": "tint-color",
+          "description": "deck.gl tintColor."
+        },
+        {
+          "name": "texture-parameters",
+          "description": "deck.gl textureParameters."
+        },
+        {
+          "name": "disk-resolution",
+          "description": "deck.gl diskResolution."
+        },
+        {
+          "name": "vertices",
+          "description": "deck.gl vertices."
+        },
+        {
+          "name": "angle",
+          "description": "deck.gl angle."
+        },
+        {
+          "name": "offset",
+          "description": "deck.gl offset."
+        },
+        {
+          "name": "coverage",
+          "description": "deck.gl coverage."
+        },
+        {
+          "name": "elevation-scale",
+          "description": "deck.gl elevationScale."
+        },
+        {
+          "name": "line-width-units",
+          "description": "deck.gl lineWidthUnits."
+        },
+        {
+          "name": "line-width-scale",
+          "description": "deck.gl lineWidthScale."
+        },
+        {
+          "name": "line-width-max-pixels",
+          "description": "deck.gl lineWidthMaxPixels."
+        },
+        {
+          "name": "extruded",
+          "description": "deck.gl extruded."
+        },
+        {
+          "name": "wireframe",
+          "description": "deck.gl wireframe."
+        },
+        {
+          "name": "flat-shading",
+          "description": "deck.gl flatShading."
+        },
+        {
+          "name": "get-elevation",
+          "description": "Accessor for deck.gl getElevation — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "material",
+          "description": "deck.gl material."
+        },
+        {
+          "name": "cell-size",
+          "description": "deck.gl cellSize."
+        },
+        {
+          "name": "icon-atlas",
+          "description": "deck.gl iconAtlas."
+        },
+        {
+          "name": "icon-mapping",
+          "description": "deck.gl iconMapping."
+        },
+        {
+          "name": "billboard",
+          "description": "deck.gl billboard."
+        },
+        {
+          "name": "size-units",
+          "description": "deck.gl sizeUnits."
+        },
+        {
+          "name": "size-basis",
+          "description": "deck.gl sizeBasis."
+        },
+        {
+          "name": "alpha-cutoff",
+          "description": "deck.gl alphaCutoff."
+        },
+        {
+          "name": "get-angle",
+          "description": "Accessor for deck.gl getAngle — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-pixel-offset",
+          "description": "Accessor for deck.gl getPixelOffset — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "joint-rounded",
+          "description": "deck.gl jointRounded."
+        },
+        {
+          "name": "cap-rounded",
+          "description": "deck.gl capRounded."
+        },
+        {
+          "name": "miter-limit",
+          "description": "deck.gl miterLimit."
+        },
+        {
+          "name": "_path-type",
+          "description": "deck.gl _pathType."
+        },
+        {
+          "name": "get-path",
+          "description": "Accessor for deck.gl getPath — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "point-size",
+          "description": "deck.gl pointSize."
+        },
+        {
+          "name": "get-normal",
+          "description": "Accessor for deck.gl getNormal — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "_normalize",
+          "description": "deck.gl _normalize."
+        },
+        {
+          "name": "_winding-order",
+          "description": "deck.gl _windingOrder."
+        },
+        {
+          "name": "line-joint-rounded",
+          "description": "deck.gl lineJointRounded."
+        },
+        {
+          "name": "line-miter-limit",
+          "description": "deck.gl lineMiterLimit."
+        },
+        {
+          "name": "get-polygon",
+          "description": "Accessor for deck.gl getPolygon — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "_full3d",
+          "description": "deck.gl _full3d."
+        },
+        {
+          "name": "background",
+          "description": "deck.gl background."
+        },
+        {
+          "name": "get-background-color",
+          "description": "Accessor for deck.gl getBackgroundColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-border-color",
+          "description": "Accessor for deck.gl getBorderColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-border-width",
+          "description": "Accessor for deck.gl getBorderWidth — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "background-border-radius",
+          "description": "deck.gl backgroundBorderRadius."
+        },
+        {
+          "name": "background-padding",
+          "description": "deck.gl backgroundPadding."
+        },
+        {
+          "name": "character-set",
+          "description": "deck.gl characterSet."
+        },
+        {
+          "name": "font-family",
+          "description": "deck.gl fontFamily."
+        },
+        {
+          "name": "font-weight",
+          "description": "deck.gl fontWeight."
+        },
+        {
+          "name": "line-height",
+          "description": "deck.gl lineHeight."
+        },
+        {
+          "name": "outline-width",
+          "description": "deck.gl outlineWidth."
+        },
+        {
+          "name": "outline-color",
+          "description": "deck.gl outlineColor."
+        },
+        {
+          "name": "font-settings",
+          "description": "deck.gl fontSettings."
+        },
+        {
+          "name": "word-break",
+          "description": "deck.gl wordBreak."
+        },
+        {
+          "name": "max-width",
+          "description": "deck.gl maxWidth."
+        },
+        {
+          "name": "content-cutoff-pixels",
+          "description": "deck.gl contentCutoffPixels."
+        },
+        {
+          "name": "content-align-horizontal",
+          "description": "deck.gl contentAlignHorizontal."
+        },
+        {
+          "name": "content-align-vertical",
+          "description": "deck.gl contentAlignVertical."
+        },
+        {
+          "name": "get-text-anchor",
+          "description": "Accessor for deck.gl getTextAnchor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-alignment-baseline",
+          "description": "Accessor for deck.gl getAlignmentBaseline — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-content-box",
+          "description": "Accessor for deck.gl getContentBox — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-pentagon",
+          "description": "Accessor for deck.gl getPentagon — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-geohash",
+          "description": "Accessor for deck.gl getGeohash — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-hexagons",
+          "description": "Accessor for deck.gl getHexagons — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "high-precision",
+          "description": "deck.gl highPrecision."
+        },
+        {
+          "name": "center-hexagon",
+          "description": "deck.gl centerHexagon."
+        },
+        {
+          "name": "get-hexagon",
+          "description": "Accessor for deck.gl getHexagon — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "extent",
+          "description": "deck.gl extent."
+        },
+        {
+          "name": "tile-size",
+          "description": "deck.gl tileSize."
+        },
+        {
+          "name": "max-cache-size",
+          "description": "deck.gl maxCacheSize."
+        },
+        {
+          "name": "max-cache-byte-size",
+          "description": "deck.gl maxCacheByteSize."
+        },
+        {
+          "name": "refinement-strategy",
+          "description": "deck.gl refinementStrategy."
+        },
+        {
+          "name": "z-range",
+          "description": "deck.gl zRange."
+        },
+        {
+          "name": "max-requests",
+          "description": "deck.gl maxRequests."
+        },
+        {
+          "name": "debounce-time",
+          "description": "deck.gl debounceTime."
+        },
+        {
+          "name": "zoom-offset",
+          "description": "deck.gl zoomOffset."
+        },
+        {
+          "name": "visible-min-zoom",
+          "description": "deck.gl visibleMinZoom."
+        },
+        {
+          "name": "visible-max-zoom",
+          "description": "deck.gl visibleMaxZoom."
+        },
+        {
+          "name": "point-radius-max-pixels",
+          "description": "deck.gl pointRadiusMaxPixels."
+        },
+        {
+          "name": "point-radius-min-pixels",
+          "description": "deck.gl pointRadiusMinPixels."
+        },
+        {
+          "name": "point-radius-scale",
+          "description": "deck.gl pointRadiusScale."
+        },
+        {
+          "name": "point-radius-units",
+          "description": "deck.gl pointRadiusUnits."
+        },
+        {
+          "name": "point-antialiasing",
+          "description": "deck.gl pointAntialiasing."
+        },
+        {
+          "name": "point-billboard",
+          "description": "deck.gl pointBillboard."
+        },
+        {
+          "name": "get-point-radius",
+          "description": "Accessor for deck.gl getPointRadius — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "icon-size-max-pixels",
+          "description": "deck.gl iconSizeMaxPixels."
+        },
+        {
+          "name": "icon-size-min-pixels",
+          "description": "deck.gl iconSizeMinPixels."
+        },
+        {
+          "name": "icon-size-scale",
+          "description": "deck.gl iconSizeScale."
+        },
+        {
+          "name": "icon-size-units",
+          "description": "deck.gl iconSizeUnits."
+        },
+        {
+          "name": "icon-alpha-cutoff",
+          "description": "deck.gl iconAlphaCutoff."
+        },
+        {
+          "name": "icon-billboard",
+          "description": "deck.gl iconBillboard."
+        },
+        {
+          "name": "get-icon-angle",
+          "description": "Accessor for deck.gl getIconAngle — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon-color",
+          "description": "Accessor for deck.gl getIconColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon-pixel-offset",
+          "description": "Accessor for deck.gl getIconPixelOffset — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon-size",
+          "description": "Accessor for deck.gl getIconSize — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "text-size-max-pixels",
+          "description": "deck.gl textSizeMaxPixels."
+        },
+        {
+          "name": "text-size-min-pixels",
+          "description": "deck.gl textSizeMinPixels."
+        },
+        {
+          "name": "text-size-scale",
+          "description": "deck.gl textSizeScale."
+        },
+        {
+          "name": "text-size-units",
+          "description": "deck.gl textSizeUnits."
+        },
+        {
+          "name": "text-background",
+          "description": "deck.gl textBackground."
+        },
+        {
+          "name": "text-background-padding",
+          "description": "deck.gl textBackgroundPadding."
+        },
+        {
+          "name": "text-font-family",
+          "description": "deck.gl textFontFamily."
+        },
+        {
+          "name": "text-font-weight",
+          "description": "deck.gl textFontWeight."
+        },
+        {
+          "name": "text-line-height",
+          "description": "deck.gl textLineHeight."
+        },
+        {
+          "name": "text-max-width",
+          "description": "deck.gl textMaxWidth."
+        },
+        {
+          "name": "text-outline-color",
+          "description": "deck.gl textOutlineColor."
+        },
+        {
+          "name": "text-outline-width",
+          "description": "deck.gl textOutlineWidth."
+        },
+        {
+          "name": "text-word-break",
+          "description": "deck.gl textWordBreak."
+        },
+        {
+          "name": "text-character-set",
+          "description": "deck.gl textCharacterSet."
+        },
+        {
+          "name": "text-billboard",
+          "description": "deck.gl textBillboard."
+        },
+        {
+          "name": "text-font-settings",
+          "description": "deck.gl textFontSettings."
+        },
+        {
+          "name": "get-text-angle",
+          "description": "Accessor for deck.gl getTextAngle — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-color",
+          "description": "Accessor for deck.gl getTextColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-pixel-offset",
+          "description": "Accessor for deck.gl getTextPixelOffset — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-size",
+          "description": "Accessor for deck.gl getTextSize — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-alignment-baseline",
+          "description": "Accessor for deck.gl getTextAlignmentBaseline — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-background-color",
+          "description": "Accessor for deck.gl getTextBackgroundColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-border-color",
+          "description": "Accessor for deck.gl getTextBorderColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-border-width",
+          "description": "Accessor for deck.gl getTextBorderWidth — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "line-cap-rounded",
+          "description": "deck.gl lineCapRounded."
+        },
+        {
+          "name": "line-billboard",
+          "description": "deck.gl lineBillboard."
+        },
+        {
+          "name": "point-type",
+          "description": "deck.gl pointType."
+        },
+        {
+          "name": "unique-id-property",
+          "description": "deck.gl uniqueIdProperty."
+        },
+        {
+          "name": "highlighted-feature-id",
+          "description": "deck.gl highlightedFeatureId."
+        },
+        {
+          "name": "binary",
+          "description": "deck.gl binary."
+        },
+        {
+          "name": "get-quadkey",
+          "description": "Accessor for deck.gl getQuadkey — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-s2-token",
+          "description": "Accessor for deck.gl getS2Token — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "elevation-data",
+          "description": "deck.gl elevationData."
+        },
+        {
+          "name": "texture",
+          "description": "deck.gl texture."
+        },
+        {
+          "name": "mesh-max-error",
+          "description": "deck.gl meshMaxError."
+        },
+        {
+          "name": "elevation-decoder",
+          "description": "deck.gl elevationDecoder."
+        },
+        {
+          "name": "worker-url",
+          "description": "deck.gl workerUrl."
+        },
+        {
+          "name": "get-point-color",
+          "description": "Accessor for deck.gl getPointColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "loader",
+          "description": "deck.gl loader."
+        },
+        {
+          "name": "fade-trail",
+          "description": "deck.gl fadeTrail."
+        },
+        {
+          "name": "trail-length",
+          "description": "deck.gl trailLength."
+        },
+        {
+          "name": "current-time",
+          "description": "deck.gl currentTime."
+        },
+        {
+          "name": "get-timestamps",
+          "description": "Accessor for deck.gl getTimestamps — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "grid-origin",
+          "description": "deck.gl gridOrigin."
+        },
+        {
+          "name": "get-weight",
+          "description": "Accessor for deck.gl getWeight — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "gpu-aggregation",
+          "description": "deck.gl gpuAggregation."
+        },
+        {
+          "name": "aggregation",
+          "description": "deck.gl aggregation."
+        },
+        {
+          "name": "contours",
+          "description": "deck.gl contours."
+        },
+        {
+          "name": "z-offset",
+          "description": "deck.gl zOffset."
+        },
+        {
+          "name": "color-domain",
+          "description": "deck.gl colorDomain."
+        },
+        {
+          "name": "color-range",
+          "description": "deck.gl colorRange."
+        },
+        {
+          "name": "get-color-value",
+          "description": "Accessor for deck.gl getColorValue — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-color-weight",
+          "description": "Accessor for deck.gl getColorWeight — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "color-aggregation",
+          "description": "deck.gl colorAggregation."
+        },
+        {
+          "name": "lower-percentile",
+          "description": "deck.gl lowerPercentile."
+        },
+        {
+          "name": "upper-percentile",
+          "description": "deck.gl upperPercentile."
+        },
+        {
+          "name": "color-scale-type",
+          "description": "deck.gl colorScaleType."
+        },
+        {
+          "name": "elevation-domain",
+          "description": "deck.gl elevationDomain."
+        },
+        {
+          "name": "elevation-range",
+          "description": "deck.gl elevationRange."
+        },
+        {
+          "name": "get-elevation-value",
+          "description": "Accessor for deck.gl getElevationValue — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-elevation-weight",
+          "description": "Accessor for deck.gl getElevationWeight — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "elevation-aggregation",
+          "description": "deck.gl elevationAggregation."
+        },
+        {
+          "name": "elevation-lower-percentile",
+          "description": "deck.gl elevationLowerPercentile."
+        },
+        {
+          "name": "elevation-upper-percentile",
+          "description": "deck.gl elevationUpperPercentile."
+        },
+        {
+          "name": "elevation-scale-type",
+          "description": "deck.gl elevationScaleType."
+        },
+        {
+          "name": "intensity",
+          "description": "deck.gl intensity."
+        },
+        {
+          "name": "radius-pixels",
+          "description": "deck.gl radiusPixels."
+        },
+        {
+          "name": "threshold",
+          "description": "deck.gl threshold."
+        },
+        {
+          "name": "weights-texture-size",
+          "description": "deck.gl weightsTextureSize."
+        },
+        {
+          "name": "debounce-timeout",
+          "description": "deck.gl debounceTimeout."
+        },
+        {
+          "name": "cell-size-pixels",
+          "description": "deck.gl cellSizePixels."
+        },
+        {
+          "name": "cell-margin-pixels",
+          "description": "deck.gl cellMarginPixels."
+        },
+        {
+          "name": "mesh",
+          "description": "deck.gl mesh."
+        },
+        {
+          "name": "_instanced",
+          "description": "deck.gl _instanced."
+        },
+        {
+          "name": "get-transform-matrix",
+          "description": "Accessor for deck.gl getTransformMatrix — expression language: $field, scale(), arithmetic."
+        }
+      ]
+    },
+    {
+      "name": "deck-overlay",
+      "description": "Rich HTML anchored to the map: a static coordinate, the current selection, or a feature's own geometry.",
+      "attributes": [
+        {
+          "name": "id",
+          "description": "Overlay id — referenced by show/hide-overlay."
+        },
+        {
+          "name": "anchor",
+          "description": "Static anchor \"[lng, lat]\"."
+        },
+        {
+          "name": "anchor-from",
+          "description": "Dynamic anchor source.",
+          "values": [
+            {
+              "name": "selection"
+            }
+          ]
+        },
+        {
+          "name": "anchor-layer",
+          "description": "Anchor to a feature of this layer (with anchor-feature-id)."
+        },
+        {
+          "name": "anchor-feature-id",
+          "description": "Feature id to anchor to — bbox center for polygons/lines."
+        },
+        {
+          "name": "anchor-offset",
+          "description": "Attachment point relative to the anchor.",
+          "values": [
+            {
+              "name": "top-left"
+            },
+            {
+              "name": "top-center"
+            },
+            {
+              "name": "top-right"
+            },
+            {
+              "name": "center-left"
+            },
+            {
+              "name": "center"
+            },
+            {
+              "name": "center-right"
+            },
+            {
+              "name": "bottom-left"
+            },
+            {
+              "name": "bottom-center"
+            },
+            {
+              "name": "bottom-right"
+            }
+          ]
+        },
+        {
+          "name": "visible",
+          "description": "Overlay visibility.",
+          "values": [
+            {
+              "name": "true"
+            },
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
+          "name": "layer",
+          "description": "Scope selection-anchored overlays to one layer's picks."
+        }
+      ],
+      "references": [
+        {
+          "name": "Stories & overlays",
+          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/stories.md"
+        }
+      ]
+    },
+    {
+      "name": "deck-behavior",
+      "description": "Declarative event → action wiring. Every other attribute becomes a payload key (kebab→camel).",
+      "attributes": [
+        {
+          "name": "on",
+          "description": "Trigger event.",
+          "values": [
+            {
+              "name": "click"
+            },
+            {
+              "name": "hover"
+            },
+            {
+              "name": "drag"
+            },
+            {
+              "name": "load"
+            },
+            {
+              "name": "data-loaded"
+            }
+          ]
+        },
+        {
+          "name": "layer",
+          "description": "Only picks on this layer trigger the behavior."
+        },
+        {
+          "name": "action",
+          "description": "Action to dispatch.",
+          "values": [
+            {
+              "name": "toggle-layer"
+            },
+            {
+              "name": "zoom-in"
+            },
+            {
+              "name": "zoom-out"
+            },
+            {
+              "name": "filter-layer"
+            },
+            {
+              "name": "highlight-feature"
+            },
+            {
+              "name": "fade"
+            },
+            {
+              "name": "pulse"
+            },
+            {
+              "name": "populate"
+            },
+            {
+              "name": "trace"
+            },
+            {
+              "name": "story-play"
+            },
+            {
+              "name": "story-pause"
+            },
+            {
+              "name": "story-seek"
+            },
+            {
+              "name": "fly-to"
+            },
+            {
+              "name": "zoom-to-feature"
+            },
+            {
+              "name": "show-overlay"
+            },
+            {
+              "name": "hide-overlay"
+            },
+            {
+              "name": "show-tooltip"
+            },
+            {
+              "name": "hide-tooltip"
+            }
+          ]
+        },
+        {
+          "name": "target",
+          "description": "Target overlay id (show/hide-overlay payload)."
+        },
+        {
+          "name": "template",
+          "description": "Tooltip template selector (show-tooltip payload)."
+        }
+      ]
+    },
+    {
+      "name": "deck-widget",
+      "description": "Map UI chrome — built-in types or inline <script type=\"deck/widget\"> render logic.",
+      "attributes": [
+        {
+          "name": "type",
+          "description": "Built-in widget type (omit for a custom scripted widget).",
+          "values": [
+            {
+              "name": "legend"
+            },
+            {
+              "name": "layer-switcher"
+            },
+            {
+              "name": "zoom-controls"
+            },
+            {
+              "name": "scale-bar"
+            },
+            {
+              "name": "attribution"
+            },
+            {
+              "name": "filter"
+            },
+            {
+              "name": "vega-lite"
+            },
+            {
+              "name": "player"
+            }
+          ]
+        },
+        {
+          "name": "position",
+          "description": "Corner placement.",
+          "values": [
+            {
+              "name": "top-left"
+            },
+            {
+              "name": "top-right"
+            },
+            {
+              "name": "bottom-left"
+            },
+            {
+              "name": "bottom-right"
+            }
+          ]
+        },
+        {
+          "name": "watch",
+          "description": "Space-separated watch tokens: viewport, selection, layers, data:<layerId>."
+        },
+        {
+          "name": "layer",
+          "description": "Layer id (filter / vega-lite widgets)."
+        },
+        {
+          "name": "field",
+          "description": "Data field (filter / vega-lite widgets)."
+        },
+        {
+          "name": "story",
+          "description": "Story id (player widget)."
+        },
+        {
+          "name": "title",
+          "description": "Widget heading."
+        }
+      ],
+      "references": [
+        {
+          "name": "Testing & widgets",
+          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/testing.md"
+        }
+      ]
+    },
+    {
+      "name": "deck-story",
+      "description": "A guided tour: time → action. Steps reference layers/overlays by id — never contain them.",
+      "attributes": [
+        {
+          "name": "id",
+          "description": "Story id — referenced by the player widget and story-* actions."
+        },
+        {
+          "name": "autoplay",
+          "description": "Start after deck-map-ready."
+        },
+        {
+          "name": "loop",
+          "description": "Restart when the tour ends."
+        },
+        {
+          "name": "interrupt",
+          "description": "What user camera gestures do to playback.",
+          "values": [
+            {
+              "name": "pause"
+            },
+            {
+              "name": "ignore"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "name": "Map stories",
+          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/stories.md"
+        }
+      ]
+    },
+    {
+      "name": "deck-step",
+      "description": "One story step: action=\"…\" plus payload attributes, or a bare effect verb (trace / pulse / fade / populate).",
+      "attributes": [
+        {
+          "name": "action",
+          "description": "Action to dispatch at this step's time.",
+          "values": [
+            {
+              "name": "toggle-layer"
+            },
+            {
+              "name": "zoom-in"
+            },
+            {
+              "name": "zoom-out"
+            },
+            {
+              "name": "filter-layer"
+            },
+            {
+              "name": "highlight-feature"
+            },
+            {
+              "name": "fade"
+            },
+            {
+              "name": "pulse"
+            },
+            {
+              "name": "populate"
+            },
+            {
+              "name": "trace"
+            },
+            {
+              "name": "story-play"
+            },
+            {
+              "name": "story-pause"
+            },
+            {
+              "name": "story-seek"
+            },
+            {
+              "name": "fly-to"
+            },
+            {
+              "name": "zoom-to-feature"
+            },
+            {
+              "name": "show-overlay"
+            },
+            {
+              "name": "hide-overlay"
+            },
+            {
+              "name": "show-tooltip"
+            },
+            {
+              "name": "hide-tooltip"
+            }
+          ]
+        },
+        {
+          "name": "duration",
+          "description": "How long the step's animation runs (\"3s\", \"800ms\"); also passed to the action."
+        },
+        {
+          "name": "delay",
+          "description": "Stagger before the step starts."
+        },
+        {
+          "name": "parallel",
+          "description": "Start with the previous step instead of after everything before it."
+        },
+        {
+          "name": "trace",
+          "description": "Effect verb: progressive draw (whole TripsLayer, or one feature with feature-id)."
+        },
+        {
+          "name": "pulse",
+          "description": "Effect verb: attention oscillation."
+        },
+        {
+          "name": "fade",
+          "description": "Effect verb: animate opacity to `to` over duration."
+        },
+        {
+          "name": "populate",
+          "description": "Effect verb: rows drop in one by one (GPU filter sweep)."
+        },
+        {
+          "name": "layer",
+          "description": "Target layer id."
+        },
+        {
+          "name": "target",
+          "description": "Target overlay id (show/hide-overlay)."
+        },
+        {
+          "name": "feature-id",
+          "description": "Target feature id (highlight/zoom/trace)."
+        },
+        {
+          "name": "center",
+          "description": "Camera center \"[lng, lat]\" (fly-to)."
+        },
+        {
+          "name": "zoom",
+          "description": "Camera zoom (fly-to)."
+        },
+        {
+          "name": "pitch",
+          "description": "Camera pitch in degrees (fly-to)."
+        },
+        {
+          "name": "bearing",
+          "description": "Camera bearing in degrees (fly-to)."
+        },
+        {
+          "name": "curve",
+          "description": "Arced flight path instead of a linear ease (fly-to)."
+        }
+      ],
+      "references": [
+        {
+          "name": "Map stories",
+          "url": "https://github.com/onlymapjs/onlymapjs/blob/main/docs/stories.md"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+  Runnable examples — unlike ../../examples/ (aspirational spec-consistency
+  docs pointing at a CDN package and fictional data), these load the live
+  dev source (https://esm.sh/onlymapjs@0.1.0) and the real datasets in ../data/, so you
+  can actually open and click through them. Same shared nav bar on every
+  page for quick switching; this page is just the landing/overview.
+-->
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>OnlyMapJS — Examples</title>
+  <link rel="stylesheet" href="nav.css" />
+  <style>
+    main { padding: 84px 24px 24px; max-width: 640px; }
+    .card { display: block; padding: 16px 18px; margin-bottom: 12px; border-radius: 10px;
+            border: 1px solid #ddd; text-decoration: none; color: inherit; }
+    .card:hover { border-color: #3355ee; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+    .card h3 { margin: 0 0 4px; }
+    .card p { margin: 0; color: #555; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <strong>OnlyMapJS examples</strong>
+    <a href="index.html" class="current">Overview</a>
+    <a href="widgets.html">Widgets</a>
+    <a href="behaviors-overlays.html">Behaviors &amp; overlays</a>
+    <a href="basemap.html">Basemap</a>
+    <a href="columnar.html">Columnar / GeoArrow</a>
+    <a href="scenegraph.html">3D models</a>
+    <a href="ais.html">Live AIS</a>
+    <a href="fleet.html">Fleet (polling)</a>
+    <a href="story.html">Map story</a>
+  </header>
+
+  <main>
+    <h1>OnlyMapJS examples</h1>
+    <p>Each page below is a real, runnable manifest — open it, pan/zoom/click around. They import the library straight from source (<code>https://esm.sh/onlymapjs@0.1.0</code>), the same way <code>dev/index.html</code> does, so they always reflect the current implementation.</p>
+
+    <a class="card" href="widgets.html">
+      <h3>Widgets</h3>
+      <p>Legend, zoom-controls, scale-bar, and a live Vega-Lite chart that updates as you pan.</p>
+    </a>
+    <a class="card" href="behaviors-overlays.html">
+      <h3>Behaviors &amp; overlays</h3>
+      <p>Click a region for a rich popup, hover a point for a tooltip, and drive a layer's filter with a slider.</p>
+    </a>
+    <a class="card" href="basemap.html">
+      <h3>Basemap</h3>
+      <p>A real MapLibre basemap (no token) with data layers composited on top.</p>
+    </a>
+    <a class="card" href="columnar.html">
+      <h3>Columnar / GeoArrow</h3>
+      <p>A week of real USGS earthquakes from an Arrow IPC file — same $field manifest, zero row objects on the render path, apache-arrow lazy-loaded on first use.</p>
+    </a>
+    <a class="card" href="scenegraph.html">
+      <h3>3D models</h3>
+      <p>GLB models instanced on the basemap via ScenegraphLayer — the browser half of an IFC/CAD asset pipeline, no three.js required.</p>
+    </a>
+    <a class="card" href="ais.html">
+      <h3>Live AIS</h3>
+      <p>A live WebSocket ship feed (simulated, aisstream.io format) — upsert-by-key, throttled flushes, widgets updating per flush.</p>
+    </a>
+    <a class="card" href="fleet.html">
+      <h3>Fleet (polling)</h3>
+      <p>Drivers from an auth-protected REST snapshot endpoint, re-polled with refresh="1s" — the Grab-style transport, with configureData supplying the bearer token.</p>
+    </a>
+    <a class="card" href="story.html">
+      <h3>Map story</h3>
+      <p>A guided tour as a manifest: <code>deck-story</code> steps fire the same actions behaviors use, with a player widget, seek/scrub, and pause-on-grab.</p>
+    </a>
+  </main>
+
+</body>
+</html>
