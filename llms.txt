@@ -33,7 +33,7 @@ UI panel (legend, chart, stats) → `<deck-widget>`. Rich HTML at one map locati
 
 - [README](README.md): thesis, authoring overview, build/run commands
 - [Docs](docs/): consumer guides for testing, live data, stories, and 3D assets
-- [Examples](examples/README.md): six complete, reviewed manifests from hello-map to a flagship dashboard and the React adapter — the canonical patterns to imitate
+- [Examples](examples/index.html): complete reviewed manifests covering widgets, overlays, basemaps, columnar data, drawing, 3D, stories, and live-data patterns
 
 ## Verification loop
 
