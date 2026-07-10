@@ -105,6 +105,25 @@ GPU filtering is declarative — `filter-field="magnitude" filter-range="[4,10]"
 
 Custom widget scripts receive `ctx`: layer metadata, `viewport` (bounds/zoom/project), the current `selection`, `emit()`, and data access — `ctx.data(id)`, `ctx.dataInViewport(id)`, `ctx.stats(id, field)` (count/min/max/mean/stddev/percentiles/histogram, viewport-scoped on request). Declare `watch` tokens (`data:quakes viewport selection layers`) and the runtime re-renders you only when relevant state changes. `vegaEmbed` and `d3` are available as globals for charts.
 
+## React
+
+The same engine, as real components — `@nika-js/onlymap/react` (React ≥ 18, optional peer). No `om-*` elements are rendered, so React and the library never fight over the DOM: components feed a typed programmatic front-end that produces the same layer IR the HTML manifest does. Accessors are plain functions (no expression language), interactions are event handlers, and `useOmMap()` is the widget `ctx` contract as a fully-typed hook:
+
+```tsx
+import { OmMap, OmLayer, OmWidget, OmOverlay, useOmMap } from "@nika-js/onlymap/react";
+
+<OmMap center={[-119, 36]} zoom={5} basemap="maplibre">
+  <OmLayer id="quakes" type="ScatterplotLayer" data={features} pickable
+           getPosition={d => [d.lon, d.lat]}
+           getFillColor={d => (d.mag >= 6 ? [214, 40, 40] : [252, 191, 73])}
+           onClick={sel => setSelected(sel.object)} />
+  <OmWidget position="top-left"><StatsPanel /></OmWidget>
+  <OmOverlay anchorFrom="selection">{sel => sel && <Card feature={sel.object} />}</OmOverlay>
+</OmMap>
+```
+
+`<OmOverlay>` manages projection, per-frame tracking, and off-screen culling for you; `<OmMap headless>` makes the whole tree testable in jsdom/happy-dom. Full guide: [docs/react.md](docs/react.md).
+
 ## Editor IntelliSense
 
 `onlymapjs.html-data.json` (generated from the layer registry — `npm run gen:html-data`) gives autocomplete and hover docs for every `om-*` element and attribute in VS Code and any editor speaking the [html-customData](https://github.com/microsoft/vscode-custom-data) format:
@@ -173,16 +192,17 @@ Plus `OmMap.snapshotIR(html)` to lock down what a manifest *means* in a snapshot
 
 - **`OmMap.*`** — `validate`, `snapshotIR`, `registerLayer`, `registerWidget`, `registerAction`, `registerSource`, `registerFormat`, `configureData`, `getLayerSchema`
 - **On a `<om-map>` element** — `ready` (promise), `flyTo(coords, zoom?)`, `setLayerVisible(id, bool)`, `getLayers()`, `emit(action, payload)`; `document.querySelector("om-map")` is fully typed
+- **`MapController`** — the framework-grade programmatic front-end (typed `LayerDescriptor`s → the same reconcile core, no DOM manifest): `setLayers`, `watch`, `emit`, camera methods, `injectPick`, `ready`. The React adapter rides it; usable directly from vanilla TS or other frameworks
 - **Testing** — `mountForTest`, and imports are SSR-safe (importing in Node/jsdom never touches browser globals)
 
 ## Not implemented yet (honestly)
 
-Mapbox GL basemaps, depth-interleaved 3D compositing, globe projection, SSE transport, multi-field filters, `dblclick` behaviors, the `transform` data pipeline, and the React adapter / typed builder.
+Mapbox GL basemaps, depth-interleaved 3D compositing, globe projection, SSE transport, multi-field filters, `dblclick` behaviors, the `transform` data pipeline, the typed fluent builder, and stories/draw as React components (both work via the HTML manifest).
 
 ## Going deeper
 
 | | |
 |---|---|
-| [docs/testing.md](docs/testing.md) · [docs/live-data.md](docs/live-data.md) · [docs/3d-assets.md](docs/3d-assets.md) · [docs/stories.md](docs/stories.md) | Consumer guides |
+| [docs/react.md](docs/react.md) · [docs/testing.md](docs/testing.md) · [docs/live-data.md](docs/live-data.md) · [docs/3d-assets.md](docs/3d-assets.md) · [docs/stories.md](docs/stories.md) | Consumer guides |
 | [llms.txt](llms.txt) | The agent-facing quick reference |
 | `skills/onlymapjs` | Installable LLM skill for OnlyMapJS authoring |

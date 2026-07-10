@@ -9,7 +9,7 @@ Vite/npm project:
 ```html
 <script type="module">
   import "@nika-js/onlymap";
-  import "onlymapjs/onlymapjs.css";
+  import "@nika-js/onlymap/onlymapjs.css";
 </script>
 ```
 

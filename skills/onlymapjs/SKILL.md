@@ -19,7 +19,7 @@ Use OnlyMapJS as a declarative HTML map library. Write custom elements such as `
 ```html
 <script type="module">
   import "@nika-js/onlymap";
-  import "onlymapjs/onlymapjs.css";
+  import "@nika-js/onlymap/onlymapjs.css";
 </script>
 ```
 

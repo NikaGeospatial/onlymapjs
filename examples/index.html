@@ -2,7 +2,7 @@
 <!--
   Runnable examples — unlike ../../examples/ (aspirational spec-consistency
   docs pointing at a CDN package and fictional data), these load the live
-  dev source (https://esm.sh/@nika-js/onlymap@0.1.1) and the real datasets in ../data/, so you
+  dev source (https://esm.sh/@nika-js/onlymap@0.2.0) and the real datasets in ../data/, so you
   can actually open and click through them. Same shared nav bar on every
   page for quick switching; this page is just the landing/overview.
 -->
@@ -36,11 +36,12 @@
     <a href="ais.html">Live AIS</a>
     <a href="fleet.html">Fleet (polling)</a>
     <a href="story.html">Map story</a>
+    <a href="https://github.com/NikaGeospatial/onlymapjs/blob/main/docs/react.md">React adapter</a>
   </header>
 
   <main>
     <h1>OnlyMapJS examples</h1>
-    <p>Each page below is a real, runnable manifest — open it, pan/zoom/click around. They import the library straight from source (<code>https://esm.sh/@nika-js/onlymap@0.1.1</code>), the same way <code>dev/index.html</code> does, so they always reflect the current implementation.</p>
+    <p>Each page below is a real, runnable manifest — open it, pan/zoom/click around. They import the library straight from source (<code>https://esm.sh/@nika-js/onlymap@0.2.0</code>), the same way <code>dev/index.html</code> does, so they always reflect the current implementation.</p>
 
     <a class="card" href="widgets.html">
       <h3>Widgets</h3>
@@ -85,6 +86,10 @@
     <a class="card" href="story.html">
       <h3>Map story</h3>
       <p>A guided tour as a manifest: <code>om-story</code> steps fire the same actions behaviors use, with a player widget, seek/scrub, and pause-on-grab.</p>
+    </a>
+    <a class="card" href="https://github.com/NikaGeospatial/onlymapjs/blob/main/docs/react.md">
+      <h3>React adapter</h3>
+      <p>The programmatic front-end as React components: <code>OmMap</code>, <code>OmLayer</code>, <code>OmWidget</code>, <code>OmOverlay</code>, and <code>useOmMap()</code>.</p>
     </a>
   </main>
 

@@ -12,7 +12,7 @@ Use these patterns as starting points. Replace data URLs, layer ids, fields, cen
   <title>OnlyMapJS map</title>
   <script type="module">
     import "@nika-js/onlymap";
-    import "onlymapjs/onlymapjs.css";
+    import "@nika-js/onlymap/onlymapjs.css";
   </script>
   <style>
     html, body { margin: 0; height: 100%; }
@@ -135,7 +135,7 @@ Use `PopupLayer` instead of many `<om-overlay>` elements for labels/badges at sc
 ```html
 <script type="module">
   import { OmMap } from "@nika-js/onlymap";
-  import "onlymapjs/onlymapjs.css";
+  import "@nika-js/onlymap/onlymapjs.css";
 
   OmMap.registerSource("fleet", {
     decode: (m) => m.type === "position"

@@ -29,10 +29,14 @@ OnlyMapJS is NOT raw deck.gl and NOT generic HTML/JSX. The rules below are the d
 
 UI panel (legend, chart, stats) → `<om-widget>`. Rich HTML at one map location (click popup) → `<om-overlay>`. Labels/badges on many features → `<om-layer type="PopupLayer">`.
 
+## React projects
+
+In a React codebase, do NOT render om-* elements from JSX (React and the library would contend over the same DOM). Use the first-party adapter instead: `import { OmMap, OmLayer, OmWidget, OmOverlay, useOmMap } from "@nika-js/onlymap/react"` — camelCase deck.gl props, accessors as plain JS functions (`getFillColor={d => ...}`, no expression language), interactions as `onClick`/`onHover` handlers, widget state via the `useOmMap(watchTokens)` hook. Guide: [docs/react.md](docs/react.md).
+
 ## Docs
 
 - [README](README.md): thesis, authoring overview, build/run commands
-- [Docs](docs/): consumer guides for testing, live data, stories, and 3D assets
+- [Docs](docs/): consumer guides for testing, live data, stories, React, and 3D assets
 - [Examples](examples/index.html): complete reviewed manifests covering widgets, overlays, basemaps, columnar data, drawing, 3D, stories, and live-data patterns
 
 ## Verification loop
