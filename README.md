@@ -4,7 +4,12 @@
 
 # OnlyMapJS
 
-**Interactive WebGL maps from plain HTML.** Write a declarative manifest — layers, widgets, popups, behaviors as custom elements — and OnlyMapJS drives [deck.gl](https://deck.gl) underneath: rendering, data loading, live updates, picking, and UI, with no build step and no imperative glue code.
+[![npm version](https://img.shields.io/npm/v/%40nika-js%2Fonlymap?logo=npm&color=cb3837)](https://www.npmjs.com/package/@nika-js/onlymap)
+[![npm downloads](https://img.shields.io/npm/dm/%40nika-js%2Fonlymap?color=8956ff)](https://www.npmjs.com/package/@nika-js/onlymap)
+[![license](https://img.shields.io/badge/license-free%20for%20non--commercial-2f8fa6)](LICENSE.md)
+[![docs](https://img.shields.io/badge/docs-nikaplanet-003646)](https://docs.nikaplanet.com/onlymap/overview)
+
+**Interactive WebGL maps from plain HTML.** OnlyMapJS is a declarative mapping library built on [deck.gl](https://deck.gl), written in TypeScript, with first-class HTML and React APIs. Write a manifest — layers, widgets, popups, behaviors as custom elements — and it drives deck.gl underneath: rendering, GeoJSON/CSV/Arrow data loading, live updates, GPU picking, MapLibre basemaps, and UI, with no build step and no imperative glue code. If you've wanted a declarative deck.gl wrapper — for a geospatial dashboard, a React mapping component, or a single-file HTML map — that's the entire premise.
 
 ```html
 <script type="module" src="https://esm.sh/@nika-js/onlymap"></script>
@@ -31,6 +36,22 @@ That's a complete app: a no-token MapLibre basemap, data-driven colors and sizes
 It's also designed to be written **by AI agents**: HTML is a reliable generation target, [`llms.txt`](llms.txt) teaches the format, and `OmMap.validate()` returns structured errors with actionable fixes — a real feedback loop instead of a blank canvas.
 
 > ⚠️ **Status: v0.2.** Proprietary — free for non-commercial use with attribution; commercial licensing terms are in [LICENSE.md](LICENSE.md). APIs may still move before 1.0.
+
+## Why not deck.gl directly?
+
+deck.gl is the best WebGL data-visualization engine there is — and OnlyMapJS is built on it, not against it. What it replaces is everything *around* deck.gl that every project rebuilds by hand:
+
+| | Raw deck.gl | OnlyMapJS |
+|---|---|---|
+| Setup | `new Deck({...})`, canvas + basemap sync wiring | one `<om-map>` element (or `<OmMap>` in React) |
+| State | your reducers/stores drive `setProps` | the manifest **is** the state — edit an attribute, the map reconciles; undo/redo built in |
+| Data loading | fetch + parse + reload yourself | `data="…"` — GeoJSON, CSV, Arrow/GeoArrow, Shapefile, KML, WebSocket streams, polled REST |
+| Accessors | JS functions + `updateTriggers` bookkeeping | `get-*` expressions; update triggers derived automatically |
+| UI | build legends/popups/filters from scratch | built-in widgets, overlays, behaviors — declarative |
+| Testing | mock WebGL or ship untested | `OmMap.validate`, IR snapshots, headless behavioral harness |
+| Escape hatch | — | every deck.gl prop still passes through; custom layers register by name |
+
+If you're comparing React mapping libraries: the React adapter (`@nika-js/onlymap/react`) gives you typed `<OmLayer>` components over the same core, so React owns state and deck.gl's `updateTriggers` gymnastics disappear. And when you need raw deck.gl behavior, every kebab-case attribute maps 1:1 to the underlying prop — it's a wrapper, not a wall.
 
 ## Install
 
