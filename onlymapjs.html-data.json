@@ -217,6 +217,9 @@
               "name": "BitmapLayer"
             },
             {
+              "name": "COGLayer"
+            },
+            {
               "name": "ColumnLayer"
             },
             {
@@ -558,6 +561,26 @@
         {
           "name": "point-size",
           "description": "deck.gl pointSize."
+        },
+        {
+          "name": "src",
+          "description": "deck.gl geotiff."
+        },
+        {
+          "name": "min",
+          "description": "deck.gl rescaleMin."
+        },
+        {
+          "name": "max",
+          "description": "deck.gl rescaleMax."
+        },
+        {
+          "name": "colormap",
+          "description": "deck.gl colormap."
+        },
+        {
+          "name": "nodata",
+          "description": "deck.gl nodataOverride."
         },
         {
           "name": "operation",

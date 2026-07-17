@@ -2,7 +2,7 @@
 <!--
   Runnable examples — unlike ../../examples/ (aspirational spec-consistency
   docs pointing at a CDN package and fictional data), these load the live
-  dev source (https://esm.sh/@nika-js/onlymap@0.3.0) and the real datasets in ../data/, so you
+  dev source (https://esm.sh/@nika-js/onlymap@0.3.1) and the real datasets in ../data/, so you
   can actually open and click through them. Same shared nav bar on every
   page for quick switching; this page is just the landing/overview.
 -->
@@ -29,6 +29,7 @@
     <a href="behaviors-overlays.html">Behaviors &amp; overlays</a>
     <a href="basemap.html">Basemap</a>
     <a href="columnar.html">Columnar / GeoArrow</a>
+    <a href="raster.html">Raster / GeoTIFF</a>
     <a href="draw.html">Draw</a>
     <a href="scenegraph.html">3D models</a>
     <a href="lighting.html">Scene lighting</a>
@@ -43,7 +44,7 @@
 
   <main>
     <h1>OnlyMapJS examples</h1>
-    <p>Each page below is a real, runnable manifest — open it, pan/zoom/click around. They import the library straight from source (<code>https://esm.sh/@nika-js/onlymap@0.3.0</code>), the same way <code>dev/index.html</code> does, so they always reflect the current implementation.</p>
+    <p>Each page below is a real, runnable manifest — open it, pan/zoom/click around. They import the library straight from source (<code>https://esm.sh/@nika-js/onlymap@0.3.1</code>), the same way <code>dev/index.html</code> does, so they always reflect the current implementation.</p>
 
     <a class="card" href="widgets.html">
       <h3>Widgets</h3>
@@ -60,6 +61,10 @@
     <a class="card" href="columnar.html">
       <h3>Columnar / GeoArrow</h3>
       <p>A week of real USGS earthquakes from an Arrow IPC file — same $field manifest, zero row objects on the render path, apache-arrow lazy-loaded on first use.</p>
+    </a>
+    <a class="card" href="raster.html">
+      <h3>Raster / GeoTIFF</h3>
+      <p>A Cloud-Optimized GeoTIFF streamed by Range request through the native COGLayer — min/max restretch and colormap swaps are GPU uniforms (no tile refetch), nodata filters to transparent, and the legend renders the ramp automatically.</p>
     </a>
     <a class="card" href="draw.html">
       <h3>Draw</h3>

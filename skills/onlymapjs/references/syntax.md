@@ -100,7 +100,7 @@ filter-field="magnitude" filter-range="[4, 10]"
 
 Use the `type` value exactly:
 
-`A5Layer`, `ArcLayer`, `BitmapLayer`, `ColumnLayer`, `ContourLayer`, `GeoJsonLayer`, `GeohashLayer`, `GreatCircleLayer`, `GridCellLayer`, `GridLayer`, `H3ClusterLayer`, `H3HexagonLayer`, `HeatmapLayer`, `HexagonLayer`, `IconLayer`, `LineLayer`, `MVTLayer`, `PathLayer`, `PointCloudLayer`, `PolygonLayer`, `PopupLayer`, `QuadkeyLayer`, `S2Layer`, `ScatterplotLayer`, `ScenegraphLayer`, `ScreenGridLayer`, `SimpleMeshLayer`, `SolidPolygonLayer`, `TerrainLayer`, `TextLayer`, `Tile3DLayer`, `TileLayer`, `TripsLayer`.
+`A5Layer`, `ArcLayer`, `BitmapLayer`, `COGLayer`, `ColumnLayer`, `ContourLayer`, `GeoJsonLayer`, `GeohashLayer`, `GreatCircleLayer`, `GridCellLayer`, `GridLayer`, `H3ClusterLayer`, `H3HexagonLayer`, `HeatmapLayer`, `HexagonLayer`, `IconLayer`, `LineLayer`, `MVTLayer`, `PathLayer`, `PointCloudLayer`, `PolygonLayer`, `PopupLayer`, `QuadkeyLayer`, `S2Layer`, `ScatterplotLayer`, `ScenegraphLayer`, `ScreenGridLayer`, `SimpleMeshLayer`, `SolidPolygonLayer`, `TerrainLayer`, `TextLayer`, `Tile3DLayer`, `TileLayer`, `TripsLayer`.
 
 Common choices:
 
@@ -110,6 +110,22 @@ Common choices:
 - Aggregation: `HeatmapLayer`, `HexagonLayer`, `GridLayer`, `ScreenGridLayer`.
 - Tiles: `TileLayer`, `MVTLayer`, `Tile3DLayer`.
 - 3D models: `ScenegraphLayer`, `SimpleMeshLayer`, `PointCloudLayer`, `Tile3DLayer`.
+- GeoTIFF/COG rasters: `COGLayer`.
+
+### COGLayer (GeoTIFF / COG rasters)
+
+```html
+<om-layer id="dem" type="COGLayer" label="Elevation"
+          src="./elevation.tif" min="0" max="1900" colormap="viridis" nodata="-9999"></om-layer>
+```
+
+- `src` (required) — the GeoTIFF URL. NOT `data`: rasters stream tiles by HTTP Range request through the layer's own reader; they are never parsed rows (`$field`, `ctx.data()`, `ctx.stats()`, filters do not apply).
+- Sources must be Cloud-Optimized GeoTIFFs (`gdal_translate -of COG` otherwise).
+- `min`/`max` — the rescale window mapped onto the colormap. Defaults to 0–255, so ALWAYS set them for float or 16-bit data (DEMs, NDVI, temperature).
+- `colormap` — single-band ramps from the bundled sprite: `gray` (default), `viridis`, `plasma`, `inferno`, `magma`, `cividis`, `rdylgn`, `rdbu`, `spectral`, `terrain`, `jet`, `turbo`. Sources with 3+ bands composite as RGB and ignore it.
+- `nodata` — overrides the source's nodata sentinel; nodata pixels render transparent.
+- Plain 8-bit RGB COGs (satellite truecolor) need no styling attributes at all.
+- Restretch/recolor (min/max/colormap edits) are GPU uniform updates — tiles are not refetched. The legend widget renders the colormap ramp automatically when `colormap` + `min`/`max` are authored.
 
 External layer classes become manifest types via `OmMap.registerLayer({type, deckClass, props})`. Build them on `@nika-js/onlymap/deck` (the bundled `CompositeLayer`/`TileLayer`/… re-exports — a separately-installed deck.gl is a different class hierarchy and breaks in the renderer); function-valued props ride the subclass's `static defaultProps`; register at module top level before the manifest mounts. Full recipe: docs/custom-layers.md.
 
@@ -183,7 +199,7 @@ Do not use full-JS blocks on columnar/Arrow layers.
 
 Built-ins:
 
-- `legend`
+- `legend` — symbology-aware by default: it parses each layer's `get-fill-color`. A `sequential`/`diverging` `scale()` renders as a gradient ramp with the domain ends labeled; a `threshold` scale as discrete class ranges (`< b1`, `b1 – b2`, `≥ bN`); an equality ternary chain (`$f == 'a' ? '#c1' : $f == 'b' ? '#c2' : '#fallback'`) as a category palette with an "other" row. Any other expression falls back to the single `color` swatch — so writing the canonical shapes buys a self-describing legend for free.
 - `layer-switcher`
 - `zoom-controls`
 - `scale-bar`
@@ -197,6 +213,17 @@ Built-ins:
 - `undo-redo` — undo/redo buttons over the manifest history (layer toggles, filters, basemap switches, element edits, drawn sketches). Keyboard works without the widget: Cmd/Ctrl-Z, Shift-Cmd/Ctrl-Z, Ctrl-Y. Camera moves, hover effects, and story playback are not undo steps.
 
 Positions: `top-left`, `top-right`, `bottom-left`, `bottom-right`.
+
+Theming: built-in widgets read `--om-widget-*` CSS custom properties, which inherit through their shadow roots — so plain page CSS themes them, no JS:
+
+```css
+/* map-wide (every widget) */
+om-map { --om-widget-bg: #111827; --om-widget-fg: #f9fafb; }
+/* or one widget */
+om-widget[type="legend"] { --om-widget-bg: #111827; --om-widget-fg: #f9fafb; }
+```
+
+The full set: `--om-widget-bg` (panel/button background), `--om-widget-fg` (text), `--om-widget-muted` (secondary text: legend field/domain labels, disabled buttons, clocks), `--om-widget-border` (separators, button outlines), `--om-widget-hover-bg` (button hover), `--om-widget-accent` (player transport buttons). Unset properties fall back to the stock light palette.
 
 Examples:
 

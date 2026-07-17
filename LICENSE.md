@@ -141,3 +141,7 @@ This Agreement, together with any applicable Order Form, is the entire agreement
 ## 20. Contact
 
 For licensing questions or requests for permissions beyond this Agreement, contact Licensor through the official repository, npm package page, website, or other distribution channel for the Software.
+
+## 21. Third-Party Software
+
+The Software's distributed bundle includes open-source components that are not governed by this Agreement; each is licensed under its own permissive terms (MIT, ISC, BSD, Apache-2.0, or similar). The complete list of those components and the full text of their licenses is provided in the accompanying THIRD-PARTY-LICENSES.md file. Nothing in this Agreement limits any rights granted by those licenses to their respective components.

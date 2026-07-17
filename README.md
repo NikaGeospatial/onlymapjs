@@ -45,7 +45,7 @@ deck.gl is the best WebGL data-visualization engine there is — and OnlyMapJS i
 |---|---|---|
 | Setup | `new Deck({...})`, canvas + basemap sync wiring | one `<om-map>` element (or `<OmMap>` in React) |
 | State | your reducers/stores drive `setProps` | the manifest **is** the state — edit an attribute, the map reconciles; undo/redo built in |
-| Data loading | fetch + parse + reload yourself | `data="…"` — GeoJSON, CSV, Arrow/GeoArrow, Shapefile, KML, WebSocket streams, polled REST |
+| Data loading | fetch + parse + reload yourself | `data="…"` — GeoJSON, CSV, Arrow/GeoArrow, Shapefile, KML, WebSocket streams, polled REST; GeoTIFF/COG rasters via `type="COGLayer"` |
 | Accessors | JS functions + `updateTriggers` bookkeeping | `get-*` expressions; update triggers derived automatically |
 | UI | build legends/popups/filters from scratch | built-in widgets, overlays, behaviors — declarative |
 | Testing | mock WebGL or ship untested | `OmMap.validate`, IR snapshots, headless behavioral harness |
@@ -65,7 +65,7 @@ Or with no build step at all, straight from a CDN:
 <script type="module" src="https://esm.sh/@nika-js/onlymap"></script>
 ```
 
-Then `npx @nika-js/onlymap init` wires up VS Code IntelliSense and `!`-prefixed manifest snippets for your project. The library ships with 437 unit/behavioral tests and 25 Playwright GPU tests.
+Then `npx @nika-js/onlymap init` wires up VS Code IntelliSense and `!`-prefixed manifest snippets for your project. The library ships with 451 unit/behavioral tests and 27 Playwright GPU tests.
 
 The [examples](https://github.com/NikaGeospatial/onlymapjs/tree/main/examples) are the best tour: widgets, behaviors & overlays, basemaps, columnar/Arrow data, manual drawing, 3D models, scene lighting (with the native lighting widget), DEM terrain, a live WebSocket ship feed, and a polled driver fleet.
 
@@ -77,7 +77,7 @@ A handful of elements, one rule: **attributes are kebab-case versions of deck.gl
 |---|---|
 | `<om-map>` | The map. `center`, `zoom`, `pitch`, `bearing`; `basemap` takes a free preset (`positron`, `liberty`, `dark-matter`, `osm`, …), a style URL, or `"none"` (standalone canvas) — and switches **live**; `validate` for a live on-page error panel. |
 | `<om-layer>` | Any of **33 layer types** by name — all of deck.gl's core, geo, aggregation, and mesh layers (Scatterplot, GeoJson, Arc, Path, Heatmap, Hexagon, Trips, Tile, Tile3D, Scenegraph, …) plus the built-in `PopupLayer` for WebGL badges/labels at scale. `id` required; `label`/`color` feed the legend. |
-| `<om-widget>` | UI panels. Built-ins: `legend`, `layer-switcher`, `basemap-switcher`, `lighting`, `zoom-controls`, `undo-redo`, `scale-bar`, `attribution`, `filter`, `draw`, `vega-lite` (live charts). Or write your own inline with HTML + a `<script type="om/widget">`. |
+| `<om-widget>` | UI panels. Built-ins: `legend` (symbology-aware: color scales render as gradient ramps or class ranges, categorical ternaries as discrete palettes), `layer-switcher`, `basemap-switcher`, `lighting`, `zoom-controls`, `undo-redo`, `scale-bar`, `attribution`, `filter`, `draw`, `vega-lite` (live charts). Or write your own inline with HTML + a `<script type="om/widget">`. Themeable from plain page CSS via custom properties: `om-map { --om-widget-bg: #111827; --om-widget-fg: #f9fafb; }` (also `-muted`, `-border`, `-hover-bg`, `-accent`). |
 | `<om-overlay>` | Rich HTML anchored to a map location — a static `anchor="[lng, lat]"`, the current selection, or a feature's own geometry via `anchor-layer`/`anchor-feature-id`. `{{field}}` interpolates the picked feature, HTML-escaped by default. |
 | `<om-behavior>` | Declarative interactions: `on="click|hover|drag|load|data-loaded"` → a named action. |
 | `<om-story>` | A storyboard: `<om-step>` children fire actions on a timeline. Controlled by the `player` widget, behaviors, or `storyEl.play()/pause()/seek()`. |
@@ -107,6 +107,7 @@ Built-ins: `scale()` (types: `sequential`, `diverging`, `threshold`, `sqrt`, `lo
 | **CSV / TSV** | `data="./quakes.csv"` | parsed to typed columns (lazy ~48 KB chunk); numbers auto-typed, quoted fields intact |
 | **Shapefile** | `data="./countries.shp"` | geometry + `.dbf` attributes joined into GeoJSON features (sidecars fetched with your auth config) |
 | **KML** | `data="./tour.kml"` | placemarks → GeoJSON features; other formats plug in via `OmMap.registerFormat` |
+| **GeoTIFF / COG raster** | `<om-layer type="COGLayer" src="./dem.tif" min="0" max="1900" colormap="viridis">` | Cloud-Optimized GeoTIFFs stream tiles by Range request (lazy chunk); min/max restretch + colormap swaps are GPU uniforms, nodata → transparent, legend ramp derives automatically; plain 8-bit RGB COGs need no attributes at all |
 | **WebSocket stream** | `data="wss://feed" key="id" flush="250ms" source="myFormat"` | upsert-by-key, burst coalescing, auto-reconnect; decode any format via `OmMap.registerSource` |
 | **Polled REST snapshot** | `data="/api/fleet.json" refresh="5s"` | full-snapshot replace per poll; outages keep the last good data |
 | **Draw store** | `data="draw:sketch"` | live in-memory GeoJSON feature store written by `<om-widget type="draw" target="sketch">` |
