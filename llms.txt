@@ -4,11 +4,18 @@
 
 OnlyMapJS is NOT raw deck.gl and NOT generic HTML/JSX. The rules below are the delta from what you already assume — following them produces correct manifests on the first pass. Validate with `OmMap.validate(htmlString)` (structured errors, each with a `fix` instruction) and inspect resolved output with `OmMap.snapshotIR(htmlString)` before finalizing.
 
+## Loading the library
+
+- npm projects: `import "@nika-js/onlymap"` + `import "@nika-js/onlymap/onlymapjs.css"`.
+- No-build/CDN pages (any HTML file that travels as an artifact): load the single-file standalone bundle from a raw-file CDN — `<script type="module" src="https://unpkg.com/@nika-js/onlymap"></script>` (resolves to `dist/onlymap.standalone.js`; pin `@<version>` in files meant to be shared) — plus `<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap/dist/onlymapjs.css">`. The stylesheet is `dist/onlymapjs.css`, NOT `dist/style.css` (an alias ships for that guess, but write the canonical path).
+- NEVER load from a rebundling CDN (esm.sh, skypack, jspm): re-bundling the code-split dist duplicates the deck.gl/luma.gl runtime across lazy chunks, and every layer then fails shader compilation (`DECKGL_FILTER_*: no matching overloaded function`) while the basemap still renders. Raw-file CDNs (unpkg, jsDelivr) are fine, for the code-split `dist/onlymapjs.js` too.
+
 ## Rules that differ from your training priors
 
 - Always write explicit closing tags: `<om-layer ...></om-layer>`. NEVER self-close (`<om-layer ... />`) — HTML5 ignores the slash on custom elements and every following sibling silently becomes a child.
 - Attributes are kebab-case, not camelCase: `get-fill-color`, `radius-units`, `line-width-min-pixels`. Every hyphenated attribute maps to the camelCase deck.gl prop.
 - Accessors are expressions in attributes, not JS functions: `get-position="[$lon, $lat]"`, `get-radius="$population * 0.001"`. `$field` reads a datum field; the library resolves flat vs. GeoJSON shape for you — never write `d.properties.x`.
+- A literal color inside a `get-*` accessor is a string IN the expression — quote it: `get-line-color="'#ffffff'"` or an RGBA array `get-line-color="[255,255,255,200]"`. Bare `get-line-color="#ffffff"` is an expression parse error (plain attributes like `color="#dc2626"` take bare hex, accessors do not).
 - Inline event handlers (`onclick="..."`) are rejected. Use `data-emit` attributes (`<span data-emit="hide-overlay" data-target="popup1">`) or `addEventListener` inside a `<script type="om/widget">` block where `ctx` is in scope.
 - `scale()` requires an explicit `domain=`: `get-fill-color="scale($depth, sequential, ['#ffffcc','#800026'], domain=[0,700])"`. A missing domain is a validation error.
 - `id` is required on every `<om-layer>`. `label` and `color` feed the legend; an explicit `get-fill-color` overrides `color` for rendering (both together is valid and common). The legend widget also reads `get-fill-color` itself: a `sequential`/`diverging` scale renders as a gradient ramp with domain labels, a `threshold` scale as discrete class ranges, and an equality ternary chain (`$f == 'a' ? '#c1' : '#c2'`) as a category palette — write those canonical shapes and the legend describes the symbology automatically.

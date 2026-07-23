@@ -12,7 +12,8 @@
 **Interactive WebGL maps from plain HTML.** OnlyMapJS is a declarative mapping library built on [deck.gl](https://deck.gl), written in TypeScript, with first-class HTML and React APIs. Write a manifest — layers, widgets, popups, behaviors as custom elements — and it drives deck.gl underneath: rendering, GeoJSON/CSV/Arrow data loading, live updates, GPU picking, MapLibre basemaps, and UI, with no build step and no imperative glue code. If you've wanted a declarative deck.gl wrapper — for a geospatial dashboard, a React mapping component, or a single-file HTML map — that's the entire premise.
 
 ```html
-<script type="module" src="https://esm.sh/@nika-js/onlymap"></script>
+<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap/dist/onlymapjs.css">
+<script type="module" src="https://unpkg.com/@nika-js/onlymap"></script>
 
 <om-map center="[-122.42, 37.77]" zoom="11" basemap="maplibre">
   <om-layer id="quakes" type="ScatterplotLayer" data="./quakes.json"
@@ -62,8 +63,11 @@ npm install @nika-js/onlymap
 Or with no build step at all, straight from a CDN:
 
 ```html
-<script type="module" src="https://esm.sh/@nika-js/onlymap"></script>
+<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap/dist/onlymapjs.css">
+<script type="module" src="https://unpkg.com/@nika-js/onlymap"></script>
 ```
+
+The bare package URL serves `dist/onlymap.standalone.js`, a single-file bundle built for exactly this (jsDelivr too). Use a CDN that serves the package's raw files — **not** a rebundling CDN like esm.sh, which re-splits the bundle into duplicate copies of the deck.gl/luma.gl runtime and breaks every layer's shader compilation.
 
 Then `npx @nika-js/onlymap init` wires up VS Code IntelliSense and `!`-prefixed manifest snippets for your project. The library ships with 451 unit/behavioral tests and 27 Playwright GPU tests.
 

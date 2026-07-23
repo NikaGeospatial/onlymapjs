@@ -23,7 +23,7 @@ Use OnlyMapJS as a declarative HTML map library. Write custom elements such as `
 </script>
 ```
 
-For no-build CDN examples, use a published module URL such as `https://esm.sh/@nika-js/onlymap@0.3.1`.
+For no-build CDN pages, use the single-file standalone bundle from a raw-file CDN — `https://unpkg.com/@nika-js/onlymap@0.3.2` (the bare package URL serves `dist/onlymap.standalone.js`) — plus `<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap@0.3.2/dist/onlymapjs.css">`. Never a rebundling CDN (esm.sh, skypack): re-bundling duplicates the deck.gl/luma.gl runtime and every layer fails shader compilation.
 
 ## React Projects
 

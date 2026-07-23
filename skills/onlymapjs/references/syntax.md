@@ -13,10 +13,11 @@ Vite/npm project:
 </script>
 ```
 
-Static CDN page:
+Static CDN page (raw-file CDNs only — unpkg/jsDelivr; never esm.sh or another rebundling CDN, which duplicates the WebGL runtime and breaks layer shaders):
 
 ```html
-<script type="module" src="https://esm.sh/@nika-js/onlymap@0.1.0"></script>
+<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap@0.3.2/dist/onlymapjs.css">
+<script type="module" src="https://unpkg.com/@nika-js/onlymap@0.3.2"></script>
 ```
 
 Always include `onlymapjs.css` — it carries the MapLibre basemap styles and the no-JS fallback rules (`<om-fallback>` / default banner). For the fallback to work in script-disabled previews it must load without JavaScript: a real `<link rel="stylesheet">` or inlined `<style>` on no-build pages (a bundler-emitted stylesheet is fine in npm projects).
