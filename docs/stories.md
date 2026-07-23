@@ -15,7 +15,7 @@ A story turns a map into a narrated sequence: fly here, reveal this, highlight t
     <om-step duration="3s" action="fly-to" center="[-122.44, 37.78]" zoom="12" curve></om-step>
     <om-step duration="4s" action="show-overlay" target="chapter" parallel delay="1500ms"></om-step>
     <om-step duration="2s" action="hide-overlay" target="chapter" delay="1s"></om-step>
-    <om-step duration="2s" action="toggle-layer" layer="bikes" visible="true"></om-step>
+    <om-step duration="2s" action="toggle-layer" layer="regions" visible="true"></om-step>
   </om-story>
 
   <om-widget type="player" story="tour" position="bottom-left"></om-widget>

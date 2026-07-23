@@ -16,8 +16,8 @@ Vite/npm project:
 Static CDN page (raw-file CDNs only — unpkg/jsDelivr; never esm.sh or another rebundling CDN, which duplicates the WebGL runtime and breaks layer shaders):
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap@0.3.2/dist/onlymapjs.css">
-<script type="module" src="https://unpkg.com/@nika-js/onlymap@0.3.2"></script>
+<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap@0.4.3/dist/onlymapjs.css">
+<script type="module" src="https://unpkg.com/@nika-js/onlymap@0.4.3"></script>
 ```
 
 Always include `onlymapjs.css` — it carries the MapLibre basemap styles and the no-JS fallback rules (`<om-fallback>` / default banner). For the fallback to work in script-disabled previews it must load without JavaScript: a real `<link rel="stylesheet">` or inlined `<style>` on no-build pages (a bundler-emitted stylesheet is fine in npm projects).
@@ -42,6 +42,7 @@ Common attributes:
 - `license-key="om_live_…"` — lifts the free-plan limits (5 layers, 25k rows per layer) and removes the corner badge; publishable origin-restricted token, safe in page source (or `OmMap.configureLicense(key)` once). Free-plan violations don't break the map: the offending layer isn't rendered and validation names the limit.
 - `terrain="terrarium|<preset>|<{z}/{x}/{y} DEM URL>|off"` — 3D elevation surface. `terrarium` is keyless (AWS); `maptiler-terrain` needs `basemap-key`/`configureBasemap`; raw DEM URLs need `terrain-decoder` (`terrarium`, `mapbox-rgb`, or `{rScaler,gScaler,bScaler,offset}` JSON). `terrain-exaggeration` scales relief (1 = true); `terrain-max-zoom` = the provider's REAL tileset cap; `terrain-texture` drapes a `{z}/{x}/{y}` imagery template. Geographic layers drape automatically; per-layer `terrain="drape|offset|off"` overrides (3D-model layers default to `offset`). Terrain REPLACES an active basemap while on (restored when off) — validation warns. Register presets with `OmMap.registerTerrain(name, {...})`; `set-terrain` action + `terrain` watch token; attribute-backed (undoable).
 - `lighting="daylight|studio|flat|custom"` — scene lighting for 3D content (extruded polygons, models); absent = deck defaults. Preset seeds values; `lighting-ambient`, `lighting-sun` (intensity; 0 removes the sun), `lighting-sun-azimuth` (° CW from north), `lighting-sun-elevation` (° above horizon), `lighting-camera` (model-inspection fill) override individual fields; `lighting-sun-date` (ISO 8601 or epoch ms) computes the sun from solar position at the map center and wins over azimuth/elevation. Attribute-backed: changes are undoable, and the `set-lighting {lighting, sunAzimuth, …}` action makes lighting story-steppable (`lighting="default"` removes the whole attribute set; a bare preset is a clean reset). `<om-widget type="lighting">` is the native UI. Widget scripts can `watch = ["lighting"]`.
+- `widgets-dim="off"` disables collision-dim — by default a widget slot dims (`--om-widget-opacity-dimmed`, 0.35) while an open `<om-overlay>` popup covers it, rather than the popup dodging (attribution/toggle slots never dim).
 - `headless width="800" height="600"` for test harness use
 
 Events: `om-map-ready` (boot complete; `await mapEl.ready` is the promise twin), `om-validation-error`, and `om-view-changed` — fires once the camera settles after a move (debounced; `detail = {longitude, latitude, zoom, pitch, bearing}`), the hook for persisting the camera. `MapController` takes an `onViewChange` option for the same signal.
@@ -211,9 +212,10 @@ Built-ins:
 - `player`
 - `basemap-switcher` — radio list of presets; `options="positron dark-matter osm"` (default: every keyless registered preset)
 - `lighting` — scene-lighting controller: preset radios (Off/daylight/studio/flat/custom) + ambient/sun/azimuth/elevation/camera sliders, all over the lighting* attributes via `set-lighting` (undoable; re-syncs when anything else writes them). A bare preset click is a clean RESET (stale lighting-* overrides removed); a slider edit flips to `custom` and sets only the touched key.
+- `widgets-toggle` — one button hiding/showing all OTHER widgets (`widgets-hidden` attribute / `set-widgets-visible {visible}` action; bare payload toggles). Hidden = visibility, never removal — widget state survives; attribution and the toggle itself never hide. Transient (not an undo step), story-scrub-capturable.
 - `undo-redo` — undo/redo buttons over the manifest history (layer toggles, filters, basemap switches, element edits, drawn sketches). Keyboard works without the widget: Cmd/Ctrl-Z, Shift-Cmd/Ctrl-Z, Ctrl-Y. Camera moves, hover effects, and story playback are not undo steps.
 
-Positions: `top-left`, `top-right`, `bottom-left`, `bottom-right`.
+Positions — 8 managed slots (logical, RTL-aware): `top-start`, `top-center`, `top-end`, `center-start`, `center-end`, `bottom-start`, `bottom-center`, `bottom-end`. Legacy corner names (`top-left`, `top-right`, `bottom-left`, `bottom-right`) are aliases. Same-slot widgets stack in one library-owned flex container: flush edges, shared gap — never overlapping. `order="1"` sets deterministic in-slot ordering (default: DOM order). Adjacent COMPACT button widgets (zoom-controls, undo-redo, widgets-toggle) in one slot auto-merge into a single control group (shared radius/shadow, 1px dividers); `cluster="false"` keeps one out — validation warns if set on a non-compact widget. `position="manual"` opts out of management: the widget renders as a plain block you place with your own CSS (even outside the map, e.g. in an app header, driving the map through actions). Layout tokens: `--om-widget-inset-x/-y` (slot inset, default 12px), `--om-widget-gap-x/-y` (stack gap, default 8px), `--om-widget-opacity`, `--om-widget-opacity-dimmed` (default 0.35 — the collision-dim level), `--om-widget-radius` — or the no-CSS sugar attribute `<om-map widget-style="gap:10 opacity:0.9 inset:16">` (keys: inset, gap, inset-x/-y, gap-x/-y, opacity, radius, size; numbers are px except opacity).
 
 Theming: built-in widgets read `--om-widget-*` CSS custom properties, which inherit through their shadow roots — so plain page CSS themes them, no JS:
 
@@ -261,7 +263,7 @@ Widget context:
 - `ctx.history` — `{ canUndo, canRedo }`; re-render on changes via the `history` watch token
 - `ctx.emit(action, payload)`
 
-Watch tokens: `data:<layerId>`, `viewport`, `selection`, `layers` (fires on layer add/remove, visibility, and filter changes), `basemap`, `history`.
+Watch tokens: `data:<layerId>`, `viewport`, `selection`, `layers` (fires on layer add/remove, visibility, and filter changes), `basemap`, `lighting`, `terrain`, `history`, `widgets` (fires on a `widgets-hidden` hide-all toggle).
 
 Use `this.$()` and `this.root`; widgets render in shadow DOM.
 

@@ -1,6 +1,6 @@
 ---
 name: onlymapjs
-description: Build, edit, debug, or review OnlyMapJS declarative HTML maps and dashboards, or React maps via the @nika-js/onlymap/react adapter. Use when a user asks for an interactive map, deck.gl-style visualization, geospatial dashboard, live fleet/telemetry map, choropleth, popup/tooltip map, map story/tour, manual drawing/sketch map, 3D map assets, a React map component, a map page shared as a single HTML file (incl. no-JS fallbacks for chat/email previews), or help with OnlyMapJS syntax, validation, widgets, data formats, testing, or publishing examples.
+description: Build, edit, debug, or review OnlyMapJS declarative HTML maps and dashboards, or React maps via the @nika-js/onlymap/react adapter. Use when a user asks for an interactive map, deck.gl-style visualization, geospatial dashboard, live fleet/telemetry map, choropleth, popup/tooltip map, map story/tour, manual drawing/sketch map, 3D map assets, a React map component, a map page shared as a single HTML file (incl. no-JS fallbacks for chat/email previews), syncing OnlyMapJS map/camera state into an app state store (Redux, MobX, Zustand, Jotai — the getStore contract), or help with OnlyMapJS syntax, validation, widgets, data formats, testing, or publishing examples.
 ---
 
 # OnlyMapJS
@@ -23,7 +23,7 @@ Use OnlyMapJS as a declarative HTML map library. Write custom elements such as `
 </script>
 ```
 
-For no-build CDN pages, use the single-file standalone bundle from a raw-file CDN — `https://unpkg.com/@nika-js/onlymap@0.3.2` (the bare package URL serves `dist/onlymap.standalone.js`) — plus `<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap@0.3.2/dist/onlymapjs.css">`. Never a rebundling CDN (esm.sh, skypack): re-bundling duplicates the deck.gl/luma.gl runtime and every layer fails shader compilation.
+For no-build CDN pages, use the single-file standalone bundle from a raw-file CDN — `https://unpkg.com/@nika-js/onlymap@0.4.3` (the bare package URL serves `dist/onlymap.standalone.js`) — plus `<link rel="stylesheet" href="https://unpkg.com/@nika-js/onlymap@0.4.3/dist/onlymapjs.css">`. Never a rebundling CDN (esm.sh, skypack): re-bundling duplicates the deck.gl/luma.gl runtime and every layer fails shader compilation.
 
 ## React Projects
 
@@ -51,6 +51,7 @@ Load the smallest reference needed for the task:
 - Attribute names are kebab-case: `get-fill-color`, `radius-units`, `line-width-min-pixels`.
 - Accessor values are expressions: `get-position="[$lon, $lat]"`.
 - `scale()` always needs an explicit `domain=`.
+- ScatterplotLayer points need an explicit size — `radius="6" radius-units="pixels"`, `get-radius="..."`, or `radius-min-pixels="..."`: deck's default is 1 METER, sub-pixel at city zooms, and validation warns on layers with no radius source.
 - Prefer canonical color expressions — a `sequential`/`diverging`/`threshold` `scale()` or an equality ternary chain — over hand-rolled arithmetic: the legend widget parses these shapes and renders a matching gradient ramp / class ranges / category palette automatically.
 - Inline handlers such as `onclick` are wrong. Use `data-emit`, `<om-behavior>`, or widget scripts.
 - Full JavaScript accessor blocks require the `js` attribute on `<om-layer>`.
@@ -64,6 +65,8 @@ Load the smallest reference needed for the task:
 - Guided tour or narrative sequence -> `<om-story>` with `<om-step>` siblings that reference existing layers/overlays by id.
 - Basemap choice or user-switchable basemaps -> `basemap` presets (`positron`, `liberty`, `dark-matter`, `osm`, ...) + `<om-widget type="basemap-switcher">`; MapTiler custom styles via a style URL or `basemap-key`.
 - Undoable UI (step back after layer toggles, filter changes, basemap switches, sketch edits) -> `<om-widget type="undo-redo">`; Cmd/Ctrl-Z works even without the widget. Camera moves and story playback are not undo steps.
+- Hide all map chrome (a clean/cinematic frame, a screenshot, a story beat) -> `widgets-hidden` attribute on `<om-map>`, the `set-widgets-visible` action, or a `<om-widget type="widgets-toggle">` button. State survives (not destroyed); attribution never hides. Do NOT hand-roll `display:none`.
+- Group adjacent map buttons (zoom + undo + toggle into one control group) -> just place compact button widgets in the same `position` slot; they auto-cluster. `cluster="false"` opts one out. Do NOT build a wrapper widget.
 - GeoTIFF/COG raster (DEM, satellite imagery, NDVI) -> `<om-layer type="COGLayer" src="…tif">` with `min`/`max`/`colormap` for single-band data (see syntax.md — `src`, not `data`).
 - Live entity updates -> `wss://` stream with `key` and optional `source` decoder.
 - REST snapshot that changes over time -> `refresh="5s"`.

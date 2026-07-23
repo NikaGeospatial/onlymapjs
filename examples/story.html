@@ -16,7 +16,7 @@
 <head>
   <meta charset="utf-8" />
   <title>OnlyMapJS — Map Stories example</title>
-  <script type="module" src="https://unpkg.com/@nika-js/onlymap@0.3.2/dist/onlymap.standalone.js"></script>
+  <script type="module" src="https://unpkg.com/@nika-js/onlymap@0.4.3/dist/onlymap.standalone.js"></script>
   <link rel="stylesheet" href="nav.css" />
 </head>
 <body>
@@ -130,6 +130,74 @@
       </div>
     </om-overlay>
 
+    <!-- Camera cards (step 4): explain the feature-aware move and the
+         pitch/bearing sequence while it is happening. -->
+    <om-overlay id="camera-control-card" anchor-layer="regions" anchor-feature-id="north-beach"
+                visible="false" anchor-offset="bottom-center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; max-width: 260px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+        .card h3 { margin: 0 0 4px; font-size: 14px; }
+      </style>
+      <div class="card">
+        <h3>Camera control</h3>
+        the camera can be programmatically controlled to zoom into specific features
+      </div>
+    </om-overlay>
+
+    <om-overlay id="viewing-angle-card" anchor-layer="regions" anchor-feature-id="north-beach"
+                visible="false" anchor-offset="bottom-center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; max-width: 230px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+        .card h3 { margin: 0 0 4px; font-size: 14px; }
+      </style>
+      <div class="card">
+        <h3>Camera angles</h3>
+        viewing angles are flexible
+      </div>
+    </om-overlay>
+
+    <!-- These cards sit beside, rather than over, the destination feature. -->
+    <om-overlay id="camera-smoothing-mission" anchor-layer="regions" anchor-feature-id="mission"
+                visible="false" anchor-offset="center">
+      <style>
+        .card { transform: translate(175px, 100px); background: #fff; border-radius: 10px; padding: 12px 16px; width: 245px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+      </style>
+      <div class="card">Camera smoothing is automated, just tell it where to go</div>
+    </om-overlay>
+
+    <om-overlay id="camera-smoothing-sunset" anchor-layer="regions" anchor-feature-id="sunset"
+                visible="false" anchor-offset="center">
+      <style>
+        .card { transform: translate(-175px, 100px); background: #fff; border-radius: 10px; padding: 12px 16px; width: 245px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+      </style>
+      <div class="card">Camera smoothing is automated, just tell it where to go</div>
+    </om-overlay>
+
+    <om-overlay id="layers-hidden-card" anchor="[-122.45, 37.80]"
+                visible="false" anchor-offset="bottom-center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 12px 16px; max-width: 260px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 13px system-ui, sans-serif; color: #111; }
+      </style>
+      <div class="card">Layers can be hidden at any time for a clearer view</div>
+    </om-overlay>
+
+    <om-overlay id="end-card" anchor="[-122.45, 37.80]"
+                visible="false" anchor-offset="bottom-center">
+      <style>
+        .card { background: #fff; border-radius: 10px; padding: 14px 18px; max-width: 300px;
+                box-shadow: 0 4px 18px rgba(0,0,0,.25); font: 14px system-ui, sans-serif; color: #111; }
+        .package { color: #2d5be3; font-weight: 700; }
+      </style>
+      <div class="card">
+        Try it today: Check out OnlyMapJS on npm at <span class="package">@nika-js/onlymap</span>
+      </div>
+    </om-overlay>
+
     <!-- The tour: time → action, same contract as behaviors/buttons. -->
     <om-story id="tour" interrupt="pause">
       <!-- Step 2: chapter card + all three polygons trace on together. The
@@ -148,21 +216,43 @@
       <om-step action="show-overlay" target="detail-mission" parallel></om-step>
       <om-step action="show-overlay" target="detail-sunset" parallel></om-step>
 
-      <!-- Step 4: fly to each polygon in turn (its detail card tracks; the
-           other two cull off-screen automatically). -->
+      <!-- Step 4: fly to North Beach while explaining feature-aware camera
+           control. Then tilt, swivel right/left, and level the camera before
+           continuing to the other polygons. -->
       <om-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="north-beach" curve></om-step>
-      <om-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="mission" curve></om-step>
-      <om-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="sunset" curve></om-step>
+      <om-step duration="2500ms" action="show-overlay" target="camera-control-card" parallel></om-step>
+      <om-step action="hide-overlay" target="detail-north-beach" parallel></om-step>
+      <om-step action="hide-overlay" target="camera-control-card"></om-step>
 
-      <!-- Step 5: hide the detail cards, zoom back to the first view, then
-           populate the point layer in behind the points card. -->
+      <om-step duration="1400ms" action="fly-to" pitch="45"></om-step>
+      <om-step duration="1400ms" action="show-overlay" target="viewing-angle-card" parallel></om-step>
+      <om-step duration="1600ms" action="fly-to" bearing="28"></om-step>
+      <om-step duration="2400ms" action="fly-to" bearing="-28"></om-step>
+      <om-step duration="1600ms" action="fly-to" bearing="0"></om-step>
+      <om-step duration="1200ms" action="fly-to" pitch="0" bearing="0"></om-step>
+      <om-step action="hide-overlay" target="viewing-angle-card" parallel></om-step>
+
+      <om-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="mission" curve></om-step>
+      <om-step duration="4500ms" action="show-overlay" target="camera-smoothing-mission" parallel></om-step>
+      <om-step action="hide-overlay" target="camera-smoothing-mission"></om-step>
+      <om-step duration="2500ms" action="zoom-to-feature" layer="regions" feature-id="sunset" curve></om-step>
+      <om-step duration="4000ms" action="show-overlay" target="camera-smoothing-sunset" parallel></om-step>
+      <om-step action="hide-overlay" target="camera-smoothing-sunset"></om-step>
+
+      <!-- Step 5: hide the detail cards, zoom back to the first view, and
+           clear the neighborhood polygons before populating the points. -->
       <om-step action="hide-overlay" target="detail-north-beach"></om-step>
       <om-step action="hide-overlay" target="detail-mission" parallel></om-step>
       <om-step action="hide-overlay" target="detail-sunset" parallel></om-step>
       <om-step duration="3s" action="fly-to" center="[-122.45, 37.773]" zoom="11.3" curve parallel></om-step>
+      <om-step action="toggle-layer" layer="regions" visible="false"></om-step>
+      <om-step duration="2200ms" action="show-overlay" target="layers-hidden-card" parallel></om-step>
+      <om-step action="hide-overlay" target="layers-hidden-card"></om-step>
       <om-step action="toggle-layer" layer="bikes" visible="true"></om-step>
       <om-step duration="3s" populate layer="bikes" parallel></om-step>
       <om-step duration="3s" action="show-overlay" target="points-card" parallel></om-step>
+      <om-step action="hide-overlay" target="points-card"></om-step>
+      <om-step action="show-overlay" target="end-card"></om-step>
     </om-story>
 
     <om-widget type="player" story="tour" position="bottom-left"></om-widget>

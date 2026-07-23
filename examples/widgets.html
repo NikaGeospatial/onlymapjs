@@ -8,7 +8,7 @@
 <head>
   <meta charset="utf-8" />
   <title>OnlyMapJS — Widgets example</title>
-  <script type="module" src="https://unpkg.com/@nika-js/onlymap@0.3.2/dist/onlymap.standalone.js"></script>
+  <script type="module" src="https://unpkg.com/@nika-js/onlymap@0.4.3/dist/onlymap.standalone.js"></script>
   <link rel="stylesheet" href="nav.css" />
 </head>
 <body>
@@ -46,13 +46,16 @@
 
     <!-- Undo/redo over the manifest history — toggle a layer in the legend,
          then step back. Cmd/Ctrl-Z and Shift-Cmd/Ctrl-Z work too. -->
-    <om-widget type="undo-redo" position="bottom-right" style="margin-bottom: 76px;"></om-widget>
+    <om-widget type="undo-redo" position="bottom-right"></om-widget>
+
+    <!-- Compact widgets sharing a slot auto-merge into one control group
+         (v0.4.2 clustering); the toggle hides all other chrome. -->
+    <om-widget type="widgets-toggle" position="bottom-right"></om-widget>
 
     <!-- Recomputes its "nice" meter/km label on every pan/zoom. -->
     <om-widget type="scale-bar" position="bottom-left"></om-widget>
 
-    <om-widget type="attribution" text="OnlyMapJS widgets example" position="bottom-left"
-                 style="margin-bottom: 28px;"></om-widget>
+    <om-widget type="attribution" text="OnlyMapJS widgets example" position="bottom-left"></om-widget>
 
     <!-- ctx.dataInViewport("bikes") re-runs on every pan/zoom (Phase 4's
          deliverable: "LLM can write a Vega-Lite histogram that updates on

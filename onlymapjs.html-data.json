@@ -155,6 +155,23 @@
           "description": "Optional {z}/{x}/{y} imagery template draped over the surface (satellite, etc.)."
         },
         {
+          "name": "widget-style",
+          "description": "Layout-token sugar: space-separated key:number pairs → --om-widget-* custom properties (e.g. \"gap:10 opacity:0.9\"). Keys: inset, gap (shorthands), inset-x/-y, gap-x/-y, opacity, radius, size. Numbers are px except opacity."
+        },
+        {
+          "name": "widgets-hidden",
+          "description": "Hide-all: every widget goes visibility:hidden (state survives — no removal) except attribution and widgets-toggle, which never hide. Toggle via the set-widgets-visible action or <om-widget type=\"widgets-toggle\">; transient UI, not an undo step; story-scrub-capturable."
+        },
+        {
+          "name": "widgets-dim",
+          "description": "Set \"off\" to disable collision-dim: by default a slot dims (--om-widget-opacity-dimmed, 0.35) while an open <om-overlay> popup covers it, rather than the popup dodging.",
+          "values": [
+            {
+              "name": "off"
+            }
+          ]
+        },
+        {
           "name": "validate",
           "description": "Run manifest validation and show the on-page error panel."
         },
@@ -443,8 +460,100 @@
           "description": "deck.gl filled."
         },
         {
+          "name": "operation",
+          "description": "deck.gl operation."
+        },
+        {
+          "name": "coordinate-system",
+          "description": "deck.gl coordinateSystem."
+        },
+        {
+          "name": "coordinate-origin",
+          "description": "deck.gl coordinateOrigin."
+        },
+        {
+          "name": "model-matrix",
+          "description": "deck.gl modelMatrix."
+        },
+        {
+          "name": "wrap-longitude",
+          "description": "deck.gl wrapLongitude."
+        },
+        {
+          "name": "position-format",
+          "description": "deck.gl positionFormat."
+        },
+        {
+          "name": "color-format",
+          "description": "deck.gl colorFormat."
+        },
+        {
+          "name": "parameters",
+          "description": "deck.gl parameters."
+        },
+        {
+          "name": "load-options",
+          "description": "deck.gl loadOptions."
+        },
+        {
+          "name": "transitions",
+          "description": "deck.gl transitions."
+        },
+        {
+          "name": "extensions",
+          "description": "deck.gl extensions."
+        },
+        {
+          "name": "loaders",
+          "description": "deck.gl loaders."
+        },
+        {
+          "name": "highlighted-object-index",
+          "description": "deck.gl highlightedObjectIndex."
+        },
+        {
+          "name": "auto-highlight",
+          "description": "deck.gl autoHighlight."
+        },
+        {
+          "name": "highlight-color",
+          "description": "Accessor for deck.gl highlightColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "radius-scale",
+          "description": "deck.gl radiusScale."
+        },
+        {
+          "name": "radius-max-pixels",
+          "description": "deck.gl radiusMaxPixels."
+        },
+        {
+          "name": "line-width-units",
+          "description": "deck.gl lineWidthUnits."
+        },
+        {
+          "name": "line-width-scale",
+          "description": "deck.gl lineWidthScale."
+        },
+        {
+          "name": "line-width-max-pixels",
+          "description": "deck.gl lineWidthMaxPixels."
+        },
+        {
+          "name": "billboard",
+          "description": "deck.gl billboard."
+        },
+        {
+          "name": "antialiasing",
+          "description": "deck.gl antialiasing."
+        },
+        {
           "name": "get-line-width",
           "description": "Accessor for deck.gl getLineWidth — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-pixel-offset",
+          "description": "Accessor for deck.gl getPixelOffset — expression language: $field, scale(), arithmetic."
         },
         {
           "name": "get-point-radius",
@@ -459,10 +568,6 @@
           "description": "deck.gl pointRadiusMinPixels."
         },
         {
-          "name": "line-width-units",
-          "description": "deck.gl lineWidthUnits."
-        },
-        {
           "name": "get-elevation",
           "description": "Accessor for deck.gl getElevation — expression language: $field, scale(), arithmetic."
         },
@@ -475,8 +580,204 @@
           "description": "deck.gl wireframe."
         },
         {
+          "name": "point-radius-max-pixels",
+          "description": "deck.gl pointRadiusMaxPixels."
+        },
+        {
+          "name": "point-radius-scale",
+          "description": "deck.gl pointRadiusScale."
+        },
+        {
+          "name": "point-antialiasing",
+          "description": "deck.gl pointAntialiasing."
+        },
+        {
+          "name": "point-billboard",
+          "description": "deck.gl pointBillboard."
+        },
+        {
+          "name": "icon-atlas",
+          "description": "deck.gl iconAtlas."
+        },
+        {
+          "name": "icon-mapping",
+          "description": "deck.gl iconMapping."
+        },
+        {
+          "name": "icon-size-max-pixels",
+          "description": "deck.gl iconSizeMaxPixels."
+        },
+        {
+          "name": "icon-size-min-pixels",
+          "description": "deck.gl iconSizeMinPixels."
+        },
+        {
+          "name": "icon-size-scale",
+          "description": "deck.gl iconSizeScale."
+        },
+        {
+          "name": "icon-size-units",
+          "description": "deck.gl iconSizeUnits."
+        },
+        {
+          "name": "icon-alpha-cutoff",
+          "description": "deck.gl iconAlphaCutoff."
+        },
+        {
+          "name": "icon-billboard",
+          "description": "deck.gl iconBillboard."
+        },
+        {
+          "name": "get-icon",
+          "description": "Accessor for deck.gl getIcon — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon-angle",
+          "description": "Accessor for deck.gl getIconAngle — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon-color",
+          "description": "Accessor for deck.gl getIconColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon-pixel-offset",
+          "description": "Accessor for deck.gl getIconPixelOffset — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-icon-size",
+          "description": "Accessor for deck.gl getIconSize — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "text-size-max-pixels",
+          "description": "deck.gl textSizeMaxPixels."
+        },
+        {
+          "name": "text-size-min-pixels",
+          "description": "deck.gl textSizeMinPixels."
+        },
+        {
+          "name": "text-size-scale",
+          "description": "deck.gl textSizeScale."
+        },
+        {
+          "name": "text-size-units",
+          "description": "deck.gl textSizeUnits."
+        },
+        {
+          "name": "text-background",
+          "description": "deck.gl textBackground."
+        },
+        {
+          "name": "text-background-padding",
+          "description": "deck.gl textBackgroundPadding."
+        },
+        {
+          "name": "text-font-family",
+          "description": "deck.gl textFontFamily."
+        },
+        {
+          "name": "text-font-weight",
+          "description": "deck.gl textFontWeight."
+        },
+        {
+          "name": "text-line-height",
+          "description": "deck.gl textLineHeight."
+        },
+        {
+          "name": "text-max-width",
+          "description": "deck.gl textMaxWidth."
+        },
+        {
+          "name": "text-outline-color",
+          "description": "deck.gl textOutlineColor."
+        },
+        {
+          "name": "text-outline-width",
+          "description": "deck.gl textOutlineWidth."
+        },
+        {
+          "name": "text-word-break",
+          "description": "deck.gl textWordBreak."
+        },
+        {
+          "name": "text-character-set",
+          "description": "deck.gl textCharacterSet."
+        },
+        {
+          "name": "text-billboard",
+          "description": "deck.gl textBillboard."
+        },
+        {
+          "name": "text-font-settings",
+          "description": "deck.gl textFontSettings."
+        },
+        {
           "name": "get-text",
           "description": "Accessor for deck.gl getText — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-angle",
+          "description": "Accessor for deck.gl getTextAngle — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-color",
+          "description": "Accessor for deck.gl getTextColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-pixel-offset",
+          "description": "Accessor for deck.gl getTextPixelOffset — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-size",
+          "description": "Accessor for deck.gl getTextSize — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-anchor",
+          "description": "Accessor for deck.gl getTextAnchor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-alignment-baseline",
+          "description": "Accessor for deck.gl getTextAlignmentBaseline — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-background-color",
+          "description": "Accessor for deck.gl getTextBackgroundColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-border-color",
+          "description": "Accessor for deck.gl getTextBorderColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "get-text-border-width",
+          "description": "Accessor for deck.gl getTextBorderWidth — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "line-joint-rounded",
+          "description": "deck.gl lineJointRounded."
+        },
+        {
+          "name": "line-cap-rounded",
+          "description": "deck.gl lineCapRounded."
+        },
+        {
+          "name": "line-miter-limit",
+          "description": "deck.gl lineMiterLimit."
+        },
+        {
+          "name": "line-billboard",
+          "description": "deck.gl lineBillboard."
+        },
+        {
+          "name": "elevation-scale",
+          "description": "deck.gl elevationScale."
+        },
+        {
+          "name": "material",
+          "description": "deck.gl material."
+        },
+        {
+          "name": "point-type",
+          "description": "deck.gl pointType."
         },
         {
           "name": "get-subtext",
@@ -489,10 +790,6 @@
         {
           "name": "get-size",
           "description": "Accessor for deck.gl getSize — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-icon",
-          "description": "Accessor for deck.gl getIcon — expression language: $field, scale(), arithmetic."
         },
         {
           "name": "layout",
@@ -539,12 +836,12 @@
           "description": "deck.gl _lighting."
         },
         {
-          "name": "tileset",
-          "description": "deck.gl data."
+          "name": "get-transform-matrix",
+          "description": "Accessor for deck.gl getTransformMatrix — expression language: $field, scale(), arithmetic."
         },
         {
-          "name": "load-options",
-          "description": "deck.gl loadOptions."
+          "name": "tileset",
+          "description": "deck.gl data."
         },
         {
           "name": "maximum-screen-space-error",
@@ -561,6 +858,14 @@
         {
           "name": "point-size",
           "description": "deck.gl pointSize."
+        },
+        {
+          "name": "get-point-color",
+          "description": "Accessor for deck.gl getPointColor — expression language: $field, scale(), arithmetic."
+        },
+        {
+          "name": "loader",
+          "description": "deck.gl loader."
         },
         {
           "name": "src",
@@ -581,62 +886,6 @@
         {
           "name": "nodata",
           "description": "deck.gl nodataOverride."
-        },
-        {
-          "name": "operation",
-          "description": "deck.gl operation."
-        },
-        {
-          "name": "coordinate-system",
-          "description": "deck.gl coordinateSystem."
-        },
-        {
-          "name": "coordinate-origin",
-          "description": "deck.gl coordinateOrigin."
-        },
-        {
-          "name": "model-matrix",
-          "description": "deck.gl modelMatrix."
-        },
-        {
-          "name": "wrap-longitude",
-          "description": "deck.gl wrapLongitude."
-        },
-        {
-          "name": "position-format",
-          "description": "deck.gl positionFormat."
-        },
-        {
-          "name": "color-format",
-          "description": "deck.gl colorFormat."
-        },
-        {
-          "name": "parameters",
-          "description": "deck.gl parameters."
-        },
-        {
-          "name": "transitions",
-          "description": "deck.gl transitions."
-        },
-        {
-          "name": "extensions",
-          "description": "deck.gl extensions."
-        },
-        {
-          "name": "loaders",
-          "description": "deck.gl loaders."
-        },
-        {
-          "name": "highlighted-object-index",
-          "description": "deck.gl highlightedObjectIndex."
-        },
-        {
-          "name": "auto-highlight",
-          "description": "deck.gl autoHighlight."
-        },
-        {
-          "name": "highlight-color",
-          "description": "Accessor for deck.gl highlightColor — expression language: $field, scale(), arithmetic."
         },
         {
           "name": "get-source-position",
@@ -739,40 +988,12 @@
           "description": "deck.gl coverage."
         },
         {
-          "name": "elevation-scale",
-          "description": "deck.gl elevationScale."
-        },
-        {
-          "name": "line-width-scale",
-          "description": "deck.gl lineWidthScale."
-        },
-        {
-          "name": "line-width-max-pixels",
-          "description": "deck.gl lineWidthMaxPixels."
-        },
-        {
           "name": "flat-shading",
           "description": "deck.gl flatShading."
         },
         {
-          "name": "material",
-          "description": "deck.gl material."
-        },
-        {
           "name": "cell-size",
           "description": "deck.gl cellSize."
-        },
-        {
-          "name": "icon-atlas",
-          "description": "deck.gl iconAtlas."
-        },
-        {
-          "name": "icon-mapping",
-          "description": "deck.gl iconMapping."
-        },
-        {
-          "name": "billboard",
-          "description": "deck.gl billboard."
         },
         {
           "name": "size-units",
@@ -789,10 +1010,6 @@
         {
           "name": "get-angle",
           "description": "Accessor for deck.gl getAngle — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-pixel-offset",
-          "description": "Accessor for deck.gl getPixelOffset — expression language: $field, scale(), arithmetic."
         },
         {
           "name": "joint-rounded",
@@ -825,14 +1042,6 @@
         {
           "name": "_winding-order",
           "description": "deck.gl _windingOrder."
-        },
-        {
-          "name": "line-joint-rounded",
-          "description": "deck.gl lineJointRounded."
-        },
-        {
-          "name": "line-miter-limit",
-          "description": "deck.gl lineMiterLimit."
         },
         {
           "name": "get-polygon",
@@ -915,10 +1124,6 @@
           "description": "deck.gl contentAlignVertical."
         },
         {
-          "name": "get-text-anchor",
-          "description": "Accessor for deck.gl getTextAnchor — expression language: $field, scale(), arithmetic."
-        },
-        {
           "name": "get-alignment-baseline",
           "description": "Accessor for deck.gl getAlignmentBaseline — expression language: $field, scale(), arithmetic."
         },
@@ -993,170 +1198,6 @@
         {
           "name": "visible-max-zoom",
           "description": "deck.gl visibleMaxZoom."
-        },
-        {
-          "name": "point-radius-max-pixels",
-          "description": "deck.gl pointRadiusMaxPixels."
-        },
-        {
-          "name": "point-radius-scale",
-          "description": "deck.gl pointRadiusScale."
-        },
-        {
-          "name": "point-antialiasing",
-          "description": "deck.gl pointAntialiasing."
-        },
-        {
-          "name": "point-billboard",
-          "description": "deck.gl pointBillboard."
-        },
-        {
-          "name": "icon-size-max-pixels",
-          "description": "deck.gl iconSizeMaxPixels."
-        },
-        {
-          "name": "icon-size-min-pixels",
-          "description": "deck.gl iconSizeMinPixels."
-        },
-        {
-          "name": "icon-size-scale",
-          "description": "deck.gl iconSizeScale."
-        },
-        {
-          "name": "icon-size-units",
-          "description": "deck.gl iconSizeUnits."
-        },
-        {
-          "name": "icon-alpha-cutoff",
-          "description": "deck.gl iconAlphaCutoff."
-        },
-        {
-          "name": "icon-billboard",
-          "description": "deck.gl iconBillboard."
-        },
-        {
-          "name": "get-icon-angle",
-          "description": "Accessor for deck.gl getIconAngle — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-icon-color",
-          "description": "Accessor for deck.gl getIconColor — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-icon-pixel-offset",
-          "description": "Accessor for deck.gl getIconPixelOffset — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-icon-size",
-          "description": "Accessor for deck.gl getIconSize — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "text-size-max-pixels",
-          "description": "deck.gl textSizeMaxPixels."
-        },
-        {
-          "name": "text-size-min-pixels",
-          "description": "deck.gl textSizeMinPixels."
-        },
-        {
-          "name": "text-size-scale",
-          "description": "deck.gl textSizeScale."
-        },
-        {
-          "name": "text-size-units",
-          "description": "deck.gl textSizeUnits."
-        },
-        {
-          "name": "text-background",
-          "description": "deck.gl textBackground."
-        },
-        {
-          "name": "text-background-padding",
-          "description": "deck.gl textBackgroundPadding."
-        },
-        {
-          "name": "text-font-family",
-          "description": "deck.gl textFontFamily."
-        },
-        {
-          "name": "text-font-weight",
-          "description": "deck.gl textFontWeight."
-        },
-        {
-          "name": "text-line-height",
-          "description": "deck.gl textLineHeight."
-        },
-        {
-          "name": "text-max-width",
-          "description": "deck.gl textMaxWidth."
-        },
-        {
-          "name": "text-outline-color",
-          "description": "deck.gl textOutlineColor."
-        },
-        {
-          "name": "text-outline-width",
-          "description": "deck.gl textOutlineWidth."
-        },
-        {
-          "name": "text-word-break",
-          "description": "deck.gl textWordBreak."
-        },
-        {
-          "name": "text-character-set",
-          "description": "deck.gl textCharacterSet."
-        },
-        {
-          "name": "text-billboard",
-          "description": "deck.gl textBillboard."
-        },
-        {
-          "name": "text-font-settings",
-          "description": "deck.gl textFontSettings."
-        },
-        {
-          "name": "get-text-angle",
-          "description": "Accessor for deck.gl getTextAngle — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-text-color",
-          "description": "Accessor for deck.gl getTextColor — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-text-pixel-offset",
-          "description": "Accessor for deck.gl getTextPixelOffset — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-text-size",
-          "description": "Accessor for deck.gl getTextSize — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-text-alignment-baseline",
-          "description": "Accessor for deck.gl getTextAlignmentBaseline — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-text-background-color",
-          "description": "Accessor for deck.gl getTextBackgroundColor — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-text-border-color",
-          "description": "Accessor for deck.gl getTextBorderColor — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "get-text-border-width",
-          "description": "Accessor for deck.gl getTextBorderWidth — expression language: $field, scale(), arithmetic."
-        },
-        {
-          "name": "line-cap-rounded",
-          "description": "deck.gl lineCapRounded."
-        },
-        {
-          "name": "line-billboard",
-          "description": "deck.gl lineBillboard."
-        },
-        {
-          "name": "point-type",
-          "description": "deck.gl pointType."
         },
         {
           "name": "unique-id-property",
@@ -1337,10 +1378,6 @@
         {
           "name": "_instanced",
           "description": "deck.gl _instanced."
-        },
-        {
-          "name": "get-transform-matrix",
-          "description": "Accessor for deck.gl getTransformMatrix — expression language: $field, scale(), arithmetic."
         }
       ]
     },
@@ -1559,6 +1596,9 @@
               "name": "set-terrain"
             },
             {
+              "name": "set-widgets-visible"
+            },
+            {
               "name": "undo"
             },
             {
@@ -1619,13 +1659,43 @@
             },
             {
               "name": "undo-redo"
+            },
+            {
+              "name": "widgets-toggle"
             }
           ]
         },
         {
           "name": "position",
-          "description": "Corner placement.",
+          "description": "Managed slot (8 logical, RTL-aware: top/center/bottom × start/center/end minus center-center), a legacy corner alias (top-left, …), or \"manual\" (author-styled placement — plain block, no forced positioning). Same-slot widgets stack with flush edges and a shared gap.",
           "values": [
+            {
+              "name": "top-start"
+            },
+            {
+              "name": "top-center"
+            },
+            {
+              "name": "top-end"
+            },
+            {
+              "name": "center-start"
+            },
+            {
+              "name": "center-end"
+            },
+            {
+              "name": "bottom-start"
+            },
+            {
+              "name": "bottom-center"
+            },
+            {
+              "name": "bottom-end"
+            },
+            {
+              "name": "manual"
+            },
             {
               "name": "top-left"
             },
@@ -1641,8 +1711,21 @@
           ]
         },
         {
+          "name": "order",
+          "description": "Deterministic in-slot ordering (flex order; lower renders first). Default: DOM order."
+        },
+        {
+          "name": "cluster",
+          "description": "Set \"false\" to keep a compact button widget (zoom-controls, undo-redo, widgets-toggle) out of the automatic control-group merge with adjacent compact widgets.",
+          "values": [
+            {
+              "name": "false"
+            }
+          ]
+        },
+        {
           "name": "watch",
-          "description": "Space-separated watch tokens: viewport, selection, layers, history, basemap, lighting, terrain, data:<layerId>."
+          "description": "Space-separated watch tokens: viewport, selection, layers, history, basemap, lighting, terrain, widgets, data:<layerId>."
         },
         {
           "name": "layer",
@@ -1840,6 +1923,9 @@
             },
             {
               "name": "set-terrain"
+            },
+            {
+              "name": "set-widgets-visible"
             },
             {
               "name": "undo"

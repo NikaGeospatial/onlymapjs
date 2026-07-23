@@ -88,7 +88,9 @@ Anchored HTML at a projected coordinate, culled off-screen/behind-globe, tracked
 
 ### `useOmMap(watch?)`
 
-Returns the typed `RuntimeContext`: `layers`, `viewport` (bounds/zoom/center/project), `selection`, `emit`, `data()`, `dataInViewport()`, `stats()`. The watch list re-renders the component when a token fires: `"viewport"`, `"selection"`, `"layers"`, `"data:<layerId>"`. No list = read-once (still gets fresh state on other re-renders).
+Returns the typed `RuntimeContext`: `layers`, `viewport` (bounds/zoom/center/project), `selection`, `emit`, `data()`, `dataInViewport()`, `stats()`. The watch list re-renders the component when a token fires: `"viewport"`, `"selection"`, `"layers"`, `"data:<layerId>"`. No list = read-once.
+
+Reads ride React's `useSyncExternalStore` over the controller's per-token stores, so they are concurrent-rendering-safe: two components watching the same token can never observe different values in one committed frame, and the returned `ctx` keeps a stable identity until a watched token actually fires (safe to use in dependency arrays). The same stores are public — `controller.getStore(token)` — for syncing map state into Redux, MobX, Zustand, or Jotai: see [external-stores.md](external-stores.md).
 
 ## Testing
 
